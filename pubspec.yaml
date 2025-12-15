@@ -1,0 +1,57 @@
+name: lr4
+description: Mad Flutter Practicum 2025
+version: 0.0.1+1
+publish_to: none
+dev_line_length: 120
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+   # Пакеты для управления состоянием
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  # Пакет для сравнения состояний Cubit
+  equatable: ^2.0.5
+  flutter_native_splash: ^2.3.11
+  provider: 6.1.5
+  url_launcher: 6.3.1
+  http: ^1.2.0 # Для сетевых запросов
+  rss_dart: ^1.0.13 # Для чтения новостей RSS
+  json_annotation: ^4.9.0 # Для работы с JSON
+  intl: ^0.19.0 # Для форматирования дат
+  xml: ^6.5.0                # Для парсинга XML от ЦБ РФ
+  connectivity_plus: ^6.0.4  # Для проверки подключения к интернету
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: 5.0.0
+
+  build_runner: ^2.4.8 # Запускатор генерации кода
+  json_serializable: ^6.7.1 # Генератор кода для JSON
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
+          weight: 500
+
+  assets:
+    - assets/icons/
+    - assets/fonts/
+
+flutter_native_splash:
+  color: "#f9f9f6"
+  image: assets/icons/logo.png 
+  android_gravity: center
+  ios_content_mode: center
+  # web_image: assets/icons/logo.png
