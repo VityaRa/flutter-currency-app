@@ -4,4 +4,6 @@ abstract interface class NewsRepository {
   Future<List<NewsModel>> getNewsList();
 
   Future<void> saveNewsList(List<NewsModel> value);
+
+  Future<List<NewsModel>> getCachedNewsList();
 }

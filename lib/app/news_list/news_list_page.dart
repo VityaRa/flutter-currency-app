@@ -21,11 +21,12 @@ class NewsListPage extends StatefulWidget {
 
 class _NewsListPageState extends State<NewsListPage> {
   late Future<List<NewsModel>> _newsListFuture;
+  List<NewsModel>? _cachedNews; // Кэшированные локальные данные
 
   // Дополнительное поле для ошибки сети
   bool _isNetworkError = false;
 
-  //  КОСТЫЛИ ДЛЯ CHROME 
+  // КОСТЫЛИ ДЛЯ CHROME 
   // true - отсутствие сети
   static const bool _simulateNetworkError = false; 
   // true - ошибка сервера (статус 500)
@@ -34,14 +35,31 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   void initState() {
     super.initState();
-    _fetchNews(); // Выделяем инициализацию в отдельный метод
+    _loadNewsWithCacheFirst(); // Загружаем данные с кэшированием
   }
 
-  Future<void> _fetchNews() async {
-    final newsRepository = context.read<NewsRepository>();
-    // 1. Имитация задержки
-    await Future.delayed(const Duration(seconds: 1)); // Имитируем задержку в 1 секунду
+  // Метод для загрузки данных с приоритетом локальных данных
+  Future<void> _loadNewsWithCacheFirst() async {
+    // 1. Сначала загружаем локальные данные
+    try {
+      final cachedData = await context.read<NewsRepository>().getCachedNewsList();
+      if (cachedData != null && cachedData.isNotEmpty) {
+        print("Загружены закешированные статьи");
+        setState(() {
+          _cachedNews = cachedData;
+        });
+      }
+    } catch (e) {
+      // Игнорируем ошибки при загрузке кэша
+      print('Ошибка загрузки кэшированных новостей: $e');
+    }
 
+    // 2. Затем пытаемся загрузить свежие данные из сети
+    _fetchFreshNews();
+  }
+
+  Future<void> _fetchFreshNews() async {
+    final newsRepository = context.read<NewsRepository>();
     final networkService = context.read<NetworkService>();
     
     // ИМИТАЦИЯ ОШИБКИ СЕТИ 
@@ -64,28 +82,45 @@ class _NewsListPageState extends State<NewsListPage> {
       return;
     }
 
-    // Если есть сеть и нет имитации ошибки сервера - настоящий запрос
+    // Если есть сеть и нет имитации ошибки сервера - загружаем свежие данные
     setState(() {
       _isNetworkError = false;
-      _newsListFuture = newsRepository.getNewsList();
+      _newsListFuture = _loadAndCacheNews();
     });
   }
 
-    // Метод для обработки успешно загруженных данных
-  Future<List<NewsModel>> _loadNewsWithSave() async {
+  // Метод для загрузки и кэширования данных
+  Future<List<NewsModel>> _loadAndCacheNews() async {
     try {
-      // Получаем данные из репозитория
+      // 1. Получаем данные из репозитория
       final newsList = await context.read<NewsRepository>().getNewsList();
       
-      // Сохраняем данные локально
+      // 2. Сохраняем данные локально
       await context.read<NewsRepository>().saveNewsList(newsList);
       
-      // Возвращаем данные для отображения
+      // 3. Обновляем кэш
+      setState(() {
+        _cachedNews = newsList;
+      });
+      
+      // 4. Возвращаем данные для отображения
       return newsList;
     } catch (e) {
+      // Если ошибка сети, но есть кэшированные данные - показываем их
+      if (_cachedNews != null && _cachedNews!.isNotEmpty) {
+        return _cachedNews!;
+      }
       // Пробрасываем ошибку дальше для обработки в FutureBuilder
       rethrow;
     }
+  }
+
+  // Метод для обновления данных (используется в RefreshIndicator)
+  Future<void> _refreshData() async {
+    // Сбрасываем Future чтобы обновить данные
+    setState(() {
+      _newsListFuture = _loadAndCacheNews();
+    });
   }
 
   @override
@@ -99,65 +134,164 @@ class _NewsListPageState extends State<NewsListPage> {
         surfaceTintColor: colors.appBarSurfaceTint, 
       ),
       body: RefreshIndicator( 
-        onRefresh: _fetchNews,
+        onRefresh: _refreshData,
         child: FutureBuilder<List<NewsModel>>(
           future: _newsListFuture,
           builder: (BuildContext context, AsyncSnapshot<List<NewsModel>> snapshot) {
             
             if (_isNetworkError) {
+              // Если нет сети, но есть кэшированные данные - показываем их
+              if (_cachedNews != null && _cachedNews!.isNotEmpty) {
+                return Column(
+                  children: [
+                    // Баннер с предупреждением об отсутствии сети
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      color: Colors.orange[100],
+                      child: Row(
+                        children: [
+                          Icon(Icons.wifi_off, color: Colors.orange[800]),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Нет подключения к интернету. Показаны ранее загруженные новости',
+                              style: TextStyle(color: Colors.orange[800]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Список кэшированных новостей
+                    Expanded(
+                      child: _buildNewsList(_cachedNews!),
+                    ),
+                  ],
+                );
+              }
+              
+              // Если нет сети И нет кэша
               return ErrorView(
                 message: 'Нет подключения к интернету. Проверьте настройки сети.',
                 onRetry: () async {
-                  // При повторе также используем метод с сохранением
                   setState(() {
-                    _newsListFuture = _loadNewsWithSave();
+                    _newsListFuture = _loadAndCacheNews();
                   });
                 },
               );
             }
 
-            // Загрузка
+            // Показываем кэшированные данные во время загрузки
             if (snapshot.connectionState == ConnectionState.waiting) {
+              if (_cachedNews != null && _cachedNews!.isNotEmpty) {
+                return Column(
+                  children: [
+                    // Индикатор обновления поверх кэшированных данных
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      color: Colors.blue[50],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Обновление новостей...',
+                            style: TextStyle(color: Colors.blue[700]),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Список кэшированных новостей
+                    Expanded(
+                      child: _buildNewsList(_cachedNews!),
+                    ),
+                  ],
+                );
+              }
+              
+              // Если нет кэша - показываем обычный индикатор загрузки
               return const Center(child: CircularProgressIndicator());
             }
 
-            final List<NewsModel>? data = snapshot.data;
+            final List<NewsModel>? freshData = snapshot.data;
             
-            // Ошибка
+            // Ошибка загрузки свежих данных
             if (snapshot.hasError) {
+              // Если есть кэшированные данные - показываем их с ошибкой
+              if (_cachedNews != null && _cachedNews!.isNotEmpty) {
+                return Column(
+                  children: [
+                    // Баннер с ошибкой
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      color: Colors.red[50],
+                      child: Row(
+                        children: [
+                          Icon(Icons.error_outline, color: Colors.red[800]),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Не удалось загрузить новые новости. Показаны ранее загруженные',
+                              style: TextStyle(color: Colors.red[800]),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Список кэшированных новостей
+                    Expanded(
+                      child: _buildNewsList(_cachedNews!),
+                    ),
+                  ],
+                );
+              }
+              
+              // Если нет кэша - показываем полноценный экран ошибки
               return ErrorView( 
                 message: 'Не удалось загрузить новости. Попробуйте еще раз.',
                 onRetry: () async {
-                  // При повторе также используем метод с сохранением
                   setState(() {
-                    _newsListFuture = _loadNewsWithSave();
+                    _newsListFuture = _loadAndCacheNews();
                   });
                 },
               );
             }
             
-            // Пустой список
-            if (data == null || data.isEmpty) {
+            // Успешная загрузка свежих данных
+            if (freshData == null || freshData.isEmpty) {
+              // Если нет свежих данных, но есть кэш - показываем кэш
+              if (_cachedNews != null && _cachedNews!.isNotEmpty) {
+                return _buildNewsList(_cachedNews!);
+              }
               return const Center(child: Text('Новостей нет'));
             }
             
-            // Успешная загрузка
-            return ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (BuildContext context, int index) {
-                final NewsModel news = data[index];
-
-                return Padding(
-                  key: ValueKey(news.link),
-                  padding: index == 0 ? EdgeInsets.zero : const EdgeInsets.only(top: 16),
-                  child: NewsCard(model: news),
-                );
-              },
-              padding: const EdgeInsets.fromLTRB(22, 16, 22, 40),
-            );
+            // Показываем свежие данные
+            return _buildNewsList(freshData);
           },
         ),
       ),
+    );
+  }
+
+  // Вспомогательный метод для построения списка новостей
+  Widget _buildNewsList(List<NewsModel> newsList) {
+    return ListView.builder(
+      itemCount: newsList.length,
+      itemBuilder: (BuildContext context, int index) {
+        final NewsModel news = newsList[index];
+
+        return Padding(
+          key: ValueKey(news.link),
+          padding: index == 0 ? EdgeInsets.zero : const EdgeInsets.only(top: 16),
+          child: NewsCard(model: news),
+        );
+      },
+      padding: const EdgeInsets.fromLTRB(22, 16, 22, 40),
     );
   }
 }

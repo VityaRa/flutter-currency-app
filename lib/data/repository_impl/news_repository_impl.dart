@@ -13,4 +13,7 @@ class NewsRepositoryImpl implements NewsRepository {
 
   @override
   Future<void> saveNewsList(List<NewsModel> value) => _dbDatasource.saveNewsList(value);
+
+  @override
+  Future<List<NewsModel>> getCachedNewsList() => _dbDatasource.getNewsList();
 }

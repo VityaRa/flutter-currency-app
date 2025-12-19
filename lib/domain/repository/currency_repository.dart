@@ -7,4 +7,6 @@ abstract interface class CurrencyRepository {
   Future<List<CurrencyHistoryModel>> getCurrencyHistory(String currencyId, DateTime from, DateTime to);
 
   Future<void> saveCurrencyList(List<CurrencyModel> value);
+
+  Future<List<CurrencyModel>> getCurrencyListFromCache();
 }

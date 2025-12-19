@@ -21,4 +21,7 @@ class CurrencyRepositoryImpl implements CurrencyRepository {
   
   @override
   Future<void> saveCurrencyList(List<CurrencyModel> value) => _dbDatasource.saveCurrencyList(value);
+
+  @override
+  Future<List<CurrencyModel>> getCurrencyListFromCache() => _dbDatasource.getCurrencyList();
 }

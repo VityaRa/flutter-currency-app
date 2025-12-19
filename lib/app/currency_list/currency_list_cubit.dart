@@ -21,44 +21,90 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
   Future<void> loadCurrencies() async {
     if (state.status == CurrencyListStatus.loading) return;
 
-    emit(state.copyWith(status: CurrencyListStatus.loading));
+    // Сначала пытаемся загрузить кэшированные данные
+    try {
+      final cachedCurrencies = await _repository.getCurrencyListFromCache();
+      if (cachedCurrencies != null && cachedCurrencies.isNotEmpty) {
+        emit(state.copyWith(
+          status: CurrencyListStatus.loading,
+          allCurrencies: cachedCurrencies,
+          filteredCurrencies: cachedCurrencies,
+        ));
+      }
+    } catch (e) {
+      // Игнорируем ошибки при загрузке кэша
+      print('Ошибка загрузки кэшированных валют: $e');
+    }
 
+    // Проверяем подключение к сети
     final isConnected = await _networkService.isConnected();
     if (!isConnected) {
-      emit(state.copyWith(status: CurrencyListStatus.networkError));
+      // Если нет сети, но есть кэшированные данные - показываем их с ошибкой сети
+      if (state.allCurrencies.isNotEmpty) {
+        emit(state.copyWith(status: CurrencyListStatus.networkError));
+      } else {
+        // Если нет сети и нет кэша - показываем полную ошибку сети
+        emit(state.copyWith(
+          status: CurrencyListStatus.networkError,
+          allCurrencies: [],
+          filteredCurrencies: [],
+        ));
+      }
       return;
     }
 
+    // Загружаем свежие данные
     try {
       final List<CurrencyModel> result = await _repository.getCurrencyList();
+
+      // Сохраняем данные в кэш
+      await _repository.saveCurrencyList(result);
 
       emit(state.copyWith(
         status: CurrencyListStatus.success,
         allCurrencies: result,
-        filteredCurrencies:
-            result, // Изначально фильтрованный список равен полному
+        filteredCurrencies: result,
+        searchQuery: state.searchQuery, // Сохраняем текущий поисковый запрос
       ));
 
-      _repository.saveCurrencyList(result);
+      // Если был поисковый запрос, применяем фильтрацию к новым данным
+      if (state.searchQuery.isNotEmpty) {
+        filterCurrencies(state.searchQuery);
+      }
     } catch (e) {
-      // Здесь можно логировать ошибку
-      emit(state.copyWith(status: CurrencyListStatus.failure));
+      // Если произошла ошибка, но есть кэшированные данные - показываем их с ошибкой
+      if (state.allCurrencies.isNotEmpty) {
+        emit(state.copyWith(status: CurrencyListStatus.failure));
+      } else {
+        // Если нет кэша - показываем полную ошибку
+        emit(state.copyWith(
+          status: CurrencyListStatus.failure,
+          allCurrencies: [],
+          filteredCurrencies: [],
+        ));
+      }
     }
   }
 
   void filterCurrencies(String query) {
     final lowerQuery = query.toLowerCase();
 
-    // 1. Фильтруем от ВСЕХ валют, а не от уже отфильтрованных
+    // Фильтруем от ВСЕХ валют
     final result = state.allCurrencies.where((currency) {
       return currency.name.toLowerCase().contains(lowerQuery) ||
           currency.symbol.toLowerCase().contains(lowerQuery);
     }).toList();
 
-    // 2. Обновляем состояние: сохраняем текст поиска и новый отфильтрованный список
+    // Обновляем состояние
     emit(state.copyWith(
       searchQuery: query,
       filteredCurrencies: result,
     ));
+  }
+
+  // Метод для принудительной перезагрузки (например, при пулле вниз)
+  Future<void> refreshCurrencies() async {
+    emit(state.copyWith(status: CurrencyListStatus.loading));
+    await loadCurrencies();
   }
 }
