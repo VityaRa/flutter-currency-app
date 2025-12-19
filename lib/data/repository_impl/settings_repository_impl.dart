@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:lr4/domain/datasource/db_datasource.dart';
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/model/app_theme_mode.dart';
 import 'package:lr4/domain/model/data_source.dart';
@@ -9,11 +8,11 @@ import 'package:lr4/domain/repository/settings_repository.dart';
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl(
     this._datasource,
-    this._dbDatasource
+    // this._dbDatasource
   );
 
   final PreferenceDatasource _datasource;
-  final DbDatasource? _dbDatasource;
+  // final DbDatasource? _dbDatasource;
 
   final StreamController<bool> _authStatusController =
       StreamController.broadcast();
@@ -64,9 +63,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<void> clearAllCache() {
-    if (_dbDatasource != null) {
-      return _dbDatasource.clearAll();
-    }
+    // if (_dbDatasource != null) {
+    //   return _dbDatasource.clearAll();
+    // }
 
     return Future.delayed(const Duration(microseconds: 1));
   }

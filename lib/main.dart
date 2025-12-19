@@ -5,8 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:logging/logging.dart';
 import 'package:lr4/app/profile/profile_page.dart';
 import 'package:lr4/app/utils/datasource_factory.dart';
-import 'package:lr4/data/datasource_impl/preference_datasource_impl/preference_datasource_impl.dart';
-import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/sqflite_datasource_impl.dart';
+import 'package:lr4/data/datasource_impl/preference_datasource_impl/preference_datasource_impl.dart'; 
 import 'package:lr4/data/repository_impl/settings_repository_impl.dart';
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/repository/settings_repository.dart';
@@ -57,7 +56,7 @@ void main() async {
   final preferenceDatasource = PreferenceDatasourceImpl(sharedPreferences, secureStorage);
   
   // Создаем SettingsRepository для получения текущего выбора источника
-  final settingsRepository = SettingsRepositoryImpl(preferenceDatasource, null);
+  final settingsRepository = SettingsRepositoryImpl(preferenceDatasource);
 
   // Инициализируем SettingsRepository для получения текущего DataSource
   await settingsRepository.initAsyncData();
@@ -74,7 +73,7 @@ void main() async {
   runApp(GlobalProviders(
     restDatasource: restDatasource,
     networkService: networkService,
-    dbDatasource: dbDatasource,
+    dbDatasource: dbDatasource!,
     preferenceDatasource: preferenceDatasource,
     settingsRepository: settingsRepository, // Добавляем SettingsRepository
     child: const App(),
@@ -84,7 +83,7 @@ void main() async {
 class GlobalProviders extends StatefulWidget {
   final RestDatasourceImpl restDatasource;
   final NetworkService networkService;
-  final DbDatasource? dbDatasource; // Теперь может быть null
+  final DbDatasource dbDatasource; // Теперь может быть null
   final PreferenceDatasourceImpl preferenceDatasource;
   final SettingsRepository settingsRepository; // Добавляем
   final Widget child;
@@ -148,13 +147,13 @@ class _GlobalProvidersState extends State<GlobalProviders> {
         ProxyProvider<DbDatasource?, CurrencyRepository>(
           update: (_, dbDatasource, __) => CurrencyRepositoryImpl(
             widget.restDatasource,
-            dbDatasource,
+            dbDatasource!,
           ),
         ),
         ProxyProvider<DbDatasource?, NewsRepository>(
           update: (_, dbDatasource, __) => NewsRepositoryImpl(
             widget.restDatasource,
-            dbDatasource,
+            dbDatasource!,
           ),
         ),
         // Провайдер для смены источника данных

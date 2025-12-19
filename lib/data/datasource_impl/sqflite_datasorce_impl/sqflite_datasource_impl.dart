@@ -1,3 +1,4 @@
+import 'package:logging/logging.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/database_helper.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/mapper/currency_model_mapper.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/mapper/news_model_mapper.dart';
@@ -5,13 +6,17 @@ import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/table.dart';
 import 'package:lr4/domain/datasource/db_datasource.dart';
 import 'package:lr4/domain/model/currency_model.dart';
 import 'package:lr4/domain/model/news_model.dart';
+import 'package:lr4/domain/service/logger_service.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SqfliteDatasourceImpl implements DbDatasource {
   final DatabaseHelper _helper = DatabaseHelper();
 
+  static final Logger _logger = LoggerService.getDatabaseLogger('Sqflite');
+
   @override
   Future<List<CurrencyModel>> getCurrencyList() async {
+    _logger.info("getCurrencyList");
     final Database db = await _helper.database;
     final List<Map<String, dynamic>> maps = await db.query(CurrencyTable.name);
 
@@ -20,6 +25,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<List<NewsModel>> getNewsList() async {
+    _logger.info("getNewsList");
     final Database db = await _helper.database;
     final List<Map<String, dynamic>> maps = await db.query(NewsTable.name);
 
@@ -28,6 +34,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> saveCurrencyList(List<CurrencyModel> value) async {
+    _logger.info("saveCurrencyList");
     final Database db = await _helper.database;
     final Batch batch = db.batch();
 
@@ -45,6 +52,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> saveNewsList(List<NewsModel> value) async {
+    _logger.info("saveNewsList");
     final Database db = await _helper.database;
     final Batch batch = db.batch();
 
@@ -62,6 +70,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> clearNewsList() async {
+    _logger.info("clearNewsList");
     final Database db = await _helper.database;
     final batch = db.batch();
     
@@ -77,6 +86,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> clearCurrencyList() async {
+    _logger.info("clearCurrencyList");
     final Database db = await _helper.database;
     final batch = db.batch();
     
@@ -92,6 +102,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> clearAll() async {
+    _logger.info("clearAll");
     final Database db = await _helper.database;
     final Batch batch = db.batch();
     
@@ -154,6 +165,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> dispose() async {
+    _logger.info("dispose");
     // SQLite не требует явного закрытия, но можно добавить если нужно
     // await _helper.database.close();
   }

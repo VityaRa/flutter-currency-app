@@ -1,16 +1,19 @@
 // lib/data/datasource_impl/drift_datasource_impl/drift_datasource_impl.dart
 
 import 'package:drift/drift.dart';
+import 'package:logging/logging.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/mapper/currency_model_mapper.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/mapper/news_model_mapper.dart';
 import 'package:lr4/domain/datasource/db_datasource.dart';
 import 'package:lr4/domain/model/currency_model.dart';
 import 'package:lr4/domain/model/news_model.dart';
+import 'package:lr4/domain/service/logger_service.dart';
 
 import 'drift_database.dart';
 
 class DriftDatasourceImpl implements DbDatasource {
   late AppDatabase _database;
+  static final Logger _logger = LoggerService.getDatabaseLogger('Drift');
 
   DriftDatasourceImpl() {
     _initDatabase();
@@ -22,6 +25,8 @@ class DriftDatasourceImpl implements DbDatasource {
 
   @override
   Future<List<CurrencyModel>> getCurrencyList() async {
+    _logger.info('getCurrencyList');
+
     try {
       // Используем сырые SQL запросы для совместимости
       final rows =
@@ -32,13 +37,14 @@ class DriftDatasourceImpl implements DbDatasource {
           .map((e) => CurrencyModelDbMapper.fromMap(e))
           .toList(growable: false);
     } catch (e) {
-      print('Ошибка при получении списка валют: $e');
+      _logger.info('Ошибка при получении списка валют: $e');
       return [];
     }
   }
 
   @override
   Future<List<NewsModel>> getNewsList() async {
+    _logger.info('getNewsList');
     try {
       final rows = await _database.customSelect('SELECT * FROM news').get();
 
@@ -47,13 +53,14 @@ class DriftDatasourceImpl implements DbDatasource {
           .map((e) => NewsModelDbMapper.fromMap(e))
           .toList(growable: false);
     } catch (e) {
-      print('Ошибка при получении списка новостей: $e');
+      _logger.info('Ошибка при получении списка новостей: $e');
       return [];
     }
   }
 
   @override
   Future<void> saveCurrencyList(List<CurrencyModel> value) async {
+    _logger.info('saveCurrencyList');
     await _database.transaction(() async {
       // Очищаем старую таблицу
       await _database.customStatement('DELETE FROM currencies');
@@ -83,6 +90,7 @@ class DriftDatasourceImpl implements DbDatasource {
 
   @override
   Future<void> saveNewsList(List<NewsModel> value) async {
+    _logger.info('saveNewsList');
     await _database.transaction(() async {
       // Очищаем старую таблицу
       await _database.customStatement('DELETE FROM news');
@@ -171,7 +179,7 @@ class DriftDatasourceImpl implements DbDatasource {
         ],
       );
     } catch (e) {
-      print('Ошибка при сохранении времени обновления для $type: $e');
+      _logger.info('Ошибка при сохранении времени обновления для $type: $e');
     }
   }
 
@@ -189,7 +197,7 @@ class DriftDatasourceImpl implements DbDatasource {
 
       return null;
     } catch (e) {
-      print('Ошибка при получении времени обновления для $type: $e');
+      _logger.info('Ошибка при получении времени обновления для $type: $e');
       return null;
     }
   }
@@ -199,8 +207,9 @@ class DriftDatasourceImpl implements DbDatasource {
     await _database.close();
   }
 
-   @override
+  @override
   Future<void> dispose() async {
+    _logger.info('dispose');
     await _database.close();
   }
 }

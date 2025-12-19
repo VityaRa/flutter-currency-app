@@ -8,7 +8,7 @@ class LoggerService {
   
   static Logger getAppLogger() => Logger('App');
   static Logger getNetworkLogger() => Logger('Network');
-  static Logger getDatabaseLogger() => Logger('Database');
+  static Logger getDatabaseLogger(String dbName) => Logger('Database.$dbName');
   static Logger getCubitLogger(String cubitName) => Logger('Cubit.$cubitName');
   static Logger getRepositoryLogger(String repoName) => Logger('Repository.$repoName');
   static Logger getDatasourceLogger(String dsName) => Logger('Datasource.$dsName');
