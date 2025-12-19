@@ -40,6 +40,7 @@ class SqfliteDatasourceImpl implements DbDatasource {
     }
 
     await batch.commit(noResult: true);
+    await saveLastCurrencyUpdate(DateTime.now());
   }
 
   @override
@@ -56,18 +57,37 @@ class SqfliteDatasourceImpl implements DbDatasource {
     }
 
     await batch.commit(noResult: true);
+    await saveLastNewsUpdate(DateTime.now());
   }
 
-    @override
+  @override
   Future<void> clearNewsList() async {
     final Database db = await _helper.database;
-    await db.delete(NewsTable.name);
+    final batch = db.batch();
+    
+    batch.delete(NewsTable.name);
+    batch.delete(
+      MetadataTable.name,
+      where: '${MetadataTable.columnType} = ?',
+      whereArgs: ['news'],
+    );
+    
+    await batch.commit(noResult: true);
   }
 
   @override
   Future<void> clearCurrencyList() async {
     final Database db = await _helper.database;
-    await db.delete(CurrencyTable.name);
+    final batch = db.batch();
+    
+    batch.delete(CurrencyTable.name);
+    batch.delete(
+      MetadataTable.name,
+      where: '${MetadataTable.columnType} = ?',
+      whereArgs: ['currency'],
+    );
+    
+    await batch.commit(noResult: true);
   }
 
   @override
@@ -80,4 +100,56 @@ class SqfliteDatasourceImpl implements DbDatasource {
     
     await batch.commit(noResult: true);
   }
+
+  @override
+  Future<void> saveLastCurrencyUpdate(DateTime dateTime) async {
+    await _saveLastUpdate('currency', dateTime);
+  }
+
+  @override
+  Future<DateTime?> getLastCurrencyUpdate() async {
+    return await _getLastUpdate('currency');
+  }
+
+  @override
+  Future<void> saveLastNewsUpdate(DateTime dateTime) async {
+    await _saveLastUpdate('news', dateTime);
+  }
+
+  @override
+  Future<DateTime?> getLastNewsUpdate() async {
+    return await _getLastUpdate('news');
+  }
+
+  Future<void> _saveLastUpdate(String type, DateTime dateTime) async {
+    final Database db = await _helper.database;
+    
+    await db.insert(
+      MetadataTable.name,
+      {
+        MetadataTable.columnType: type,
+        MetadataTable.columnLastUpdated: dateTime.millisecondsSinceEpoch,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<DateTime?> _getLastUpdate(String type) async {
+    final Database db = await _helper.database;
+    
+    final List<Map<String, dynamic>> result = await db.query(
+      MetadataTable.name,
+      where: '${MetadataTable.columnType} = ?',
+      whereArgs: [type],
+      limit: 1,
+    );
+    
+    if (result.isNotEmpty) {
+      final timestamp = result.first[MetadataTable.columnLastUpdated] as int;
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+    
+    return null;
+  }
+
 }

@@ -11,4 +11,6 @@ abstract interface class CurrencyRepository {
   Future<List<CurrencyModel>> getCurrencyListFromCache();
 
   Future<void> clearCache();
+
+  Future<DateTime?> getLastUpdate();
 }

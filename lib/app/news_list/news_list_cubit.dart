@@ -34,9 +34,12 @@ class NewsListCubit extends Cubit<NewsListState> {
     final cachedNews = await _repository.getCachedNewsList();
     _logger.info("_tryLoadCache Получено: ${cachedNews.length} новостей из кэша");
     if (cachedNews.isNotEmpty) {
+      final lastUpdated = await _repository.getLastUpdate();
       _logger.info("_tryLoadCache Отображены: ${cachedNews.length} новостей из кэша");
       emit(state.copyWith(
         allNews: cachedNews,
+        lastUpdateTime: lastUpdated,
+
       ));
       return;
     }
@@ -96,6 +99,7 @@ class NewsListCubit extends Cubit<NewsListState> {
         allNews: result,
         isRefreshing: false,
         errorMessage: null,
+        lastUpdateTime: null,
       ));
       _logger.info("_tryLoadFromNetwork - завершно с успхеом");
     } catch (e) {
@@ -104,7 +108,6 @@ class NewsListCubit extends Cubit<NewsListState> {
         emit(state.copyWith(
           status: NewsListStatus.failure,
           isRefreshing: false,
-          lastUpdateTime: DateTime.now(),
           errorMessage: 'Не удалось обновить новости',
         ));
       } else {

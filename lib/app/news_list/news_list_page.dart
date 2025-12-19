@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:lr4/app/news_list/news_list_cubit.dart';
 import 'package:lr4/app/news_list/news_list_state.dart';
 import 'package:lr4/app/news_list/widgets/news_card.dart';
@@ -11,16 +13,21 @@ import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/model/news_model.dart';
 import 'package:lr4/domain/repository/news_repository.dart';
 import 'package:lr4/app/widgets/error_view.dart';
+import 'package:lr4/domain/service/logger_service.dart';
 import 'package:lr4/domain/service/network_service.dart';
+
+abstract class _NewsListConstants {
+  static const String timeFormat = 'EE. H:mm dd.MM.yy';
+  static const String ruLocale = 'ru';
+}
 
 class NewsListPage extends StatelessWidget {
   const NewsListPage({super.key});
+  static final Logger _logger = LoggerService.getUILogger('NewsList');
 
   void _loadNews(BuildContext context) {
-    print("NewsListPage _loadNews");
     context.read<NewsListCubit>().init();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +46,7 @@ class NewsListPage extends StatelessWidget {
         ),
         body: BlocBuilder<NewsListCubit, NewsListState>(
           builder: (context, state) {
+           _logger.info("lastUpdateTime ${state.lastUpdateTime}");
             // Если есть кэшированные данные, показываем их (даже при ошибке сети)
             if (state.allNews.isNotEmpty) {
               return _buildContent(context, state, colors);
@@ -47,7 +55,7 @@ class NewsListPage extends StatelessWidget {
             // Обработка ошибок только если нет кэшированных данных
             if (state.status == NewsListStatus.networkError) {
               return ErrorView(
-                message: state.errorMessage ?? 
+                message: state.errorMessage ??
                     'Нет подключения к интернету. Проверьте настройки сети.',
                 onRetry: () => _loadNews(context),
               );
@@ -61,7 +69,7 @@ class NewsListPage extends StatelessWidget {
             }
 
             // Если данных нет и идет загрузка
-            if (state.status == NewsListStatus.loading || 
+            if (state.status == NewsListStatus.loading ||
                 state.status == NewsListStatus.refreshing) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -105,6 +113,8 @@ class NewsListPage extends StatelessWidget {
 
   Widget _buildContent(
       BuildContext context, NewsListState state, ThemeColors colors) {
+        _logger.info("lastUpdateTime ${state.lastUpdateTime}");
+
     return Column(
       children: [
         // Баннер с ошибкой сети (если есть кэш)
@@ -119,7 +129,7 @@ class NewsListPage extends StatelessWidget {
         //         const SizedBox(width: 8),
         //         Expanded(
         //           child: Text(
-        //             state.errorMessage ?? 
+        //             state.errorMessage ??
         //                 'Нет подключения к интернету. Показаны кэшированные новости.',
         //             style: TextStyle(
         //               fontSize: 14,
@@ -155,7 +165,7 @@ class NewsListPage extends StatelessWidget {
         //         const SizedBox(width: 8),
         //         Expanded(
         //           child: Text(
-        //             state.errorMessage ?? 
+        //             state.errorMessage ??
         //                 'Не удалось обновить новости. Показаны ранее загруженные.',
         //             style: TextStyle(
         //               fontSize: 14,
@@ -208,13 +218,14 @@ class NewsListPage extends StatelessWidget {
         //   ),
 
         // Информация о последнем обновлении
+        
         if (state.lastUpdateTime != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
-                'Обновлено: ${_formatTime(state.lastUpdateTime!)}',
+                'Обновлено: ${DateFormat(_NewsListConstants.timeFormat, _NewsListConstants.ruLocale).format(state.lastUpdateTime!)}',
                 style: TextStyle(
                   fontSize: 12,
                   color: colors.grey,
@@ -283,7 +294,8 @@ class NewsListPage extends StatelessWidget {
 
         return Padding(
           key: ValueKey(news.link),
-          padding: index == 0 ? EdgeInsets.zero : const EdgeInsets.only(top: 16),
+          padding:
+              index == 0 ? EdgeInsets.zero : const EdgeInsets.only(top: 16),
           child: NewsCard(model: news),
         );
       },

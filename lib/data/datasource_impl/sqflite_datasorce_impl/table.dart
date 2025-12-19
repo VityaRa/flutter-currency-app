@@ -23,3 +23,17 @@ abstract class NewsTable {
           )
         ''';
 }
+
+abstract class MetadataTable {
+  static const String name = 'metadata';
+  static const String columnId = 'id';
+  static const String columnType = 'type';
+  static const String columnLastUpdated = 'last_updated';
+  static const String creationRequest = '''
+          CREATE TABLE $name (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            type TEXT UNIQUE NOT NULL,
+            last_updated INTEGER NOT NULL
+          )
+        ''';
+}

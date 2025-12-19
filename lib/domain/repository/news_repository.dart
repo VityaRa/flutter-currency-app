@@ -8,4 +8,6 @@ abstract interface class NewsRepository {
   Future<List<NewsModel>> getCachedNewsList();
 
   Future<void> clearCache();
+
+  Future<DateTime?> getLastUpdate();
 }

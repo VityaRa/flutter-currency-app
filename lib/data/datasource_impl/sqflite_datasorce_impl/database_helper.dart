@@ -3,7 +3,7 @@ import 'package:path/path.dart' show join;
 import 'package:sqflite/sqflite.dart';
 
 const String _databaseName = 'app_database.db';
-const int _databaseVersion = 1;
+const int _databaseVersion = 2;
 
 class DatabaseHelper {
   const DatabaseHelper._internal();
@@ -28,6 +28,11 @@ class DatabaseHelper {
           db.execute(CurrencyTable.creationRequest),
           db.execute(NewsTable.creationRequest),
         ]);
+      },
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        if (oldVersion == 1 && newVersion == 2) {
+          await db.execute(MetadataTable.creationRequest);
+        }
       },
     );
   }

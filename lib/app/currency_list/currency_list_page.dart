@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:lr4/app/currency_list/currency_list_cubit.dart';
 import 'package:lr4/app/currency_list/currency_list_state.dart';
@@ -15,6 +16,11 @@ import 'package:lr4/domain/repository/currency_repository.dart';
 import 'package:lr4/app/widgets/error_view.dart';
 import 'package:lr4/domain/service/logger_service.dart';
 import 'package:lr4/domain/service/network_service.dart';
+
+abstract class _CurrencyListConstants {
+  static const String timeFormat = 'EE. H:mm dd.MM.yy';
+  static const String ruLocale = 'ru';
+}
 
 class CurrencyListPage extends StatelessWidget {
   const CurrencyListPage({super.key});
@@ -45,7 +51,6 @@ class CurrencyListPage extends StatelessWidget {
         ),
         body: BlocBuilder<CurrencyListCubit, CurrencyListState>(
           builder: (context, state) {
-            _logger.info("Список для рендера: ${state.allCurrencies.length}; filtered: ${state.filteredCurrencies.length}");
             if (state.allCurrencies.isNotEmpty) {
               return _buildContent(context, state, colors);
             }
@@ -115,6 +120,7 @@ class CurrencyListPage extends StatelessWidget {
 
   Widget _buildContent(
       BuildContext context, CurrencyListState state, ThemeColors colors) {
+    _logger.info("lastUpdateTime ${state.lastUpdateTime}");
     return Column(
       children: [
         // Заголовок с индикатором обновления
@@ -145,14 +151,13 @@ class CurrencyListPage extends StatelessWidget {
         ),
 
         // Информация о последнем обновлении
-        if (state.lastUpdateTime != null &&
-            state.status != CurrencyListStatus.cached)
+        if (state.lastUpdateTime != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
-                'Обновлено: ${_formatTime(state.lastUpdateTime!)}',
+                'Обновлено: ${DateFormat(_CurrencyListConstants.timeFormat, _CurrencyListConstants.ruLocale).format(state.lastUpdateTime!)}',
                 style: TextStyle(
                   fontSize: 12,
                   color: colors.grey,
@@ -233,15 +238,5 @@ class CurrencyListPage extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _formatTime(DateTime time) {
-    final now = DateTime.now();
-    final difference = now.difference(time);
-
-    if (difference.inMinutes < 1) return 'только что';
-    if (difference.inMinutes < 60) return '${difference.inMinutes} мин назад';
-    if (difference.inHours < 24) return '${difference.inHours} ч назад';
-    return '${difference.inDays} дн назад';
   }
 }

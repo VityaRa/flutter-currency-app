@@ -35,18 +35,25 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
 
   Future<void> _tryLoadCache() async {
     final cachedCurrencies = await _repository.getCurrencyListFromCache();
-    _logger.info("_tryLoadCache Получено: ${cachedCurrencies.length} валют из кэша");
+    _logger.info(
+        "_tryLoadCache Получено: ${cachedCurrencies.length} валют из кэша");
     if (cachedCurrencies.isNotEmpty) {
+      final lastUpdated = await _repository.getLastUpdate();
       _logger.info(
           "_tryLoadCache Отображены: ${cachedCurrencies.length} валют из кэша");
+
+      _logger.info("_tryLoadCache lastUpdated: $lastUpdated");
       emit(state.copyWith(
         allCurrencies: cachedCurrencies,
+        lastUpdateTime: lastUpdated,
+        filteredCurrencies: cachedCurrencies,
       ));
       return;
     }
 
     emit(state.copyWith(
       allCurrencies: [],
+      filteredCurrencies: cachedCurrencies,
     ));
 
     _logger.info("_tryLoadCache кэш пустой: новости берем из сети");
@@ -100,6 +107,7 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
         filteredCurrencies: result,
         isRefreshing: false,
         errorMessage: null,
+        lastUpdateTime: null,
       ));
       _logger.info("_tryLoadFromNetwork - завершно с успхеом");
     } catch (e) {
@@ -108,7 +116,6 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
         emit(state.copyWith(
           status: CurrencyListStatus.failure,
           isRefreshing: false,
-          lastUpdateTime: DateTime.now(),
           errorMessage: 'Не удалось обновить новости',
         ));
       } else {
@@ -201,7 +208,6 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
   //     }
   //   }
   // }
-
 
   void filterCurrencies(String query) {
     final result = _applyFilter(state.allCurrencies, query);

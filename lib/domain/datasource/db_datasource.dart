@@ -15,4 +15,9 @@ abstract interface class DbDatasource {
   Future<void> clearNewsList();
   
   Future<void> clearAll();
+
+  Future<void> saveLastCurrencyUpdate(DateTime dateTime);
+  Future<DateTime?> getLastCurrencyUpdate();
+  Future<void> saveLastNewsUpdate(DateTime dateTime);
+  Future<DateTime?> getLastNewsUpdate();
 }
