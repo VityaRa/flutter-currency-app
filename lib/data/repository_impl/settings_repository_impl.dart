@@ -13,7 +13,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   );
 
   final PreferenceDatasource _datasource;
-  final DbDatasource _dbDatasource;
+  final DbDatasource? _dbDatasource;
 
   final StreamController<bool> _authStatusController =
       StreamController.broadcast();
@@ -29,7 +29,6 @@ class SettingsRepositoryImpl implements SettingsRepository {
     final bool isAuth = await getToken() != null;
     _authStatusController.add(isAuth);
     _isAuth = isAuth;
-    print(dataSource);
 
     _datasourceController.add(dataSource);
   }
@@ -65,7 +64,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<void> clearAllCache() {
-    return _dbDatasource.clearAll();
+    if (_dbDatasource != null) {
+      return _dbDatasource.clearAll();
+    }
+
+    return Future.delayed(const Duration(microseconds: 1));
   }
 
   @override

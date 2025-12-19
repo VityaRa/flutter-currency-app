@@ -20,4 +20,6 @@ abstract interface class DbDatasource {
   Future<DateTime?> getLastCurrencyUpdate();
   Future<void> saveLastNewsUpdate(DateTime dateTime);
   Future<DateTime?> getLastNewsUpdate();
+
+  Future<void> dispose();
 }

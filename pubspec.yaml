@@ -32,6 +32,8 @@ dependencies:
   connectivity_plus: ^6.0.4  # Для проверки подключения к интернету
   logger: ^2.6.2
   logging: ^1.3.0
+  drift: ^2.30.0
+
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +41,7 @@ dev_dependencies:
 
   flutter_lints: 5.0.0
 
+  drift_dev: ^2.19.0
   build_runner: ^2.4.8 # Запускатор генерации кода
   json_serializable: ^6.7.1 # Генератор кода для JSON
 

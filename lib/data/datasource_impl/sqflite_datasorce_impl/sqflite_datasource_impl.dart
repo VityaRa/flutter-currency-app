@@ -152,4 +152,9 @@ class SqfliteDatasourceImpl implements DbDatasource {
     return null;
   }
 
+  @override
+  Future<void> dispose() async {
+    // SQLite не требует явного закрытия, но можно добавить если нужно
+    // await _helper.database.close();
+  }
 }

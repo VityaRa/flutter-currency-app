@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/date_symbol_data_local.dart'; // Для дат
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:logging/logging.dart';
 import 'package:lr4/app/profile/profile_page.dart';
+import 'package:lr4/app/utils/datasource_factory.dart';
 import 'package:lr4/data/datasource_impl/preference_datasource_impl/preference_datasource_impl.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/sqflite_datasource_impl.dart';
 import 'package:lr4/data/repository_impl/settings_repository_impl.dart';
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/repository/settings_repository.dart';
 import 'package:lr4/domain/service/logger_service.dart';
-import 'package:provider/provider.dart'; // Для провайдеров репозиториев
+import 'package:provider/provider.dart';
 
 // Импортируем маршруты и экраны
 import 'package:lr4/app/app_routes.dart';
@@ -36,6 +37,10 @@ import 'package:lr4/domain/model/app_theme_mode.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart' as custom_theme;
 import 'package:lr4/app/utils/theme_mode_ext.dart';
 
+// Добавляем импорт фабрики источников данных
+import 'package:lr4/domain/model/data_source.dart';
+import 'package:lr4/domain/datasource/db_datasource.dart';
+
 void main() async {
   LoggerService.initialize(level: Level.ALL); 
   final appLogger = LoggerService.getAppLogger();
@@ -45,13 +50,22 @@ void main() async {
   // Инициализируем форматирование дат
   await initializeDateFormatting('ru_RU', null);
 
-
-
   final sharedPreferences = await SharedPreferences.getInstance();
   final secureStorage = FlutterSecureStorage();
 
-  final dbDatasource = SqfliteDatasourceImpl();
+  // Создаем PreferenceDatasource
   final preferenceDatasource = PreferenceDatasourceImpl(sharedPreferences, secureStorage);
+  
+  // Создаем SettingsRepository для получения текущего выбора источника
+  final settingsRepository = SettingsRepositoryImpl(preferenceDatasource, null);
+
+  // Инициализируем SettingsRepository для получения текущего DataSource
+  await settingsRepository.initAsyncData();
+  
+  // Создаем DbDatasource на основе выбора пользователя
+  final dbDatasource = DatasourceFactory.createDbDatasource(
+    settingsRepository: settingsRepository,
+  );
 
   // Создаем источник данных 
   final restDatasource = RestDatasourceImpl();
@@ -62,15 +76,17 @@ void main() async {
     networkService: networkService,
     dbDatasource: dbDatasource,
     preferenceDatasource: preferenceDatasource,
+    settingsRepository: settingsRepository, // Добавляем SettingsRepository
     child: const App(),
   ));
 }
 
-class GlobalProviders extends StatelessWidget {
+class GlobalProviders extends StatefulWidget {
   final RestDatasourceImpl restDatasource;
   final NetworkService networkService;
-  final SqfliteDatasourceImpl dbDatasource;
+  final DbDatasource? dbDatasource; // Теперь может быть null
   final PreferenceDatasourceImpl preferenceDatasource;
+  final SettingsRepository settingsRepository; // Добавляем
   final Widget child;
 
   const GlobalProviders({
@@ -79,35 +95,74 @@ class GlobalProviders extends StatelessWidget {
     required this.networkService,
     required this.dbDatasource,
     required this.preferenceDatasource,
+    required this.settingsRepository,
     required this.child,
   });
 
   @override
+  State<GlobalProviders> createState() => _GlobalProvidersState();
+}
+
+class _GlobalProvidersState extends State<GlobalProviders> {
+  late DbDatasource? _currentDbDatasource;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentDbDatasource = widget.dbDatasource;
+  }
+
+  Future<void> _switchDataSource(DataSource newSource) async {
+    // Сохраняем новый выбор
+    await widget.settingsRepository.setDataSource(newSource);
+    
+    // Закрываем текущую базу данных если есть
+    await _currentDbDatasource?.dispose();
+    
+    // Создаем новую базу данных
+    final newDatasource = DatasourceFactory.createDbDatasource(
+      settingsRepository: widget.settingsRepository,
+    );
+    
+    setState(() {
+      _currentDbDatasource = newDatasource;
+    });
+    
+    // Уведомляем о необходимости пересоздания репозиториев
+    // В реальном приложении здесь может потребоваться перезагрузка приложения
+    // или обновление всех провайдеров
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // 1. Сначала внедряем Репозитории
     return MultiProvider(
       providers: [
-        Provider<PreferenceDatasource>.value(value: preferenceDatasource),
-        Provider<CurrencyRepository>(
-          create: (_) => CurrencyRepositoryImpl(
-            restDatasource,
+        Provider<PreferenceDatasource>.value(value: widget.preferenceDatasource),
+        Provider<SettingsRepository>.value(value: widget.settingsRepository),
+        Provider<NetworkService>.value(value: widget.networkService),
+        Provider<DbDatasource?>(
+          // Передаем текущий источник данных (может быть null)
+          create: (_) => _currentDbDatasource,
+        ),
+        // Репозитории зависят от DbDatasource
+        ProxyProvider<DbDatasource?, CurrencyRepository>(
+          update: (_, dbDatasource, __) => CurrencyRepositoryImpl(
+            widget.restDatasource,
             dbDatasource,
           ),
         ),
-        Provider<NewsRepository>(
-          create: (_) => NewsRepositoryImpl(
-            restDatasource,
+        ProxyProvider<DbDatasource?, NewsRepository>(
+          update: (_, dbDatasource, __) => NewsRepositoryImpl(
+            widget.restDatasource,
             dbDatasource,
           ),
         ),
-        Provider<NetworkService>(
-          create: (_) => networkService,
-        ),
-        Provider<SettingsRepository>(
-          create: (_) => SettingsRepositoryImpl(preferenceDatasource, dbDatasource),
+        // Провайдер для смены источника данных
+        Provider<Function(DataSource)>(
+          create: (_) => _switchDataSource,
         ),
       ],
-      child: child,
+      child: widget.child,
     );
   }
 }
