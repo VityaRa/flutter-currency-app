@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:lr4/app/currency_list/currency_list_cubit.dart';
 import 'package:lr4/app/currency_list/currency_list_state.dart';
 import 'package:lr4/app/currency_list/widgets/currency_card.dart';
@@ -9,15 +10,18 @@ import 'package:lr4/app/currency_list/widgets/search_view.dart';
 import 'package:lr4/app/app_routes.dart';
 import 'package:lr4/app/utils/context_ext.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
+import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/repository/currency_repository.dart';
 import 'package:lr4/app/widgets/error_view.dart';
+import 'package:lr4/domain/service/logger_service.dart';
 import 'package:lr4/domain/service/network_service.dart';
 
 class CurrencyListPage extends StatelessWidget {
   const CurrencyListPage({super.key});
+  static final Logger _logger = LoggerService.getUILogger('CurrencyList');
 
   void _loadCurrencies(BuildContext context) {
-    context.read<CurrencyListCubit>().loadCurrencies();
+    context.read<CurrencyListCubit>().init();
   }
 
   @override
@@ -28,6 +32,7 @@ class CurrencyListPage extends StatelessWidget {
       create: (context) => CurrencyListCubit(
         repository: context.read<CurrencyRepository>(),
         networkService: context.read<NetworkService>(),
+        preferenceDatasource: context.read<PreferenceDatasource>(),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -40,6 +45,7 @@ class CurrencyListPage extends StatelessWidget {
         ),
         body: BlocBuilder<CurrencyListCubit, CurrencyListState>(
           builder: (context, state) {
+            _logger.info("Список для рендера: ${state.allCurrencies.length}; filtered: ${state.filteredCurrencies.length}");
             if (state.allCurrencies.isNotEmpty) {
               return _buildContent(context, state, colors);
             }

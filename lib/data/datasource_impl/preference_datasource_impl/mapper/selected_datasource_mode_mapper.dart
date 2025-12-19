@@ -3,8 +3,8 @@ import 'package:lr4/domain/model/data_source.dart';
 
 extension DataSourceDaoMapper on DataSourceDao {
   DataSource get model => switch (this) {
-    DataSourceDao.cacheFirst => DataSource.cacheFirst,
-    DataSourceDao.networkFirst => DataSource.networkFirst,
-    DataSourceDao.networkOnly => DataSource.networkOnly,
+    DataSourceDao.network => DataSource.network,
+    DataSourceDao.drift => DataSource.drift,
+    DataSourceDao.sqfLite => DataSource.sqfLite,
   };
 }

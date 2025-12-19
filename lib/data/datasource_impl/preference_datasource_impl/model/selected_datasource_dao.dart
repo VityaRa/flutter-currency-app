@@ -1,9 +1,7 @@
 enum DataSourceDao {
-  networkFirst,
-  cacheFirst,
-  networkOnly;
+ network, sqfLite, drift;
 
   static DataSourceDao fromString(String? name) =>
       DataSourceDao.values.firstWhere((e) => e.name == name,
-          orElse: () => DataSourceDao.cacheFirst);
+          orElse: () => DataSourceDao.network);
 }

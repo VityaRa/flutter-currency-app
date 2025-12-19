@@ -30,6 +30,8 @@ dependencies:
   intl: ^0.19.0 # Для форматирования дат
   xml: ^6.5.0                # Для парсинга XML от ЦБ РФ
   connectivity_plus: ^6.0.4  # Для проверки подключения к интернету
+  logger: ^2.6.2
+  logging: ^1.3.0
 
 dev_dependencies:
   flutter_test:

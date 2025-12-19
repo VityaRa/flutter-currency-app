@@ -18,6 +18,7 @@ class CurrencyListState extends Equatable {
   final List<CurrencyModel> allCurrencies;
   final List<CurrencyModel> filteredCurrencies;
   final String searchQuery;
+  final String errorMessage;
   final bool isRefreshing;
   final DateTime? lastUpdateTime;
 
@@ -26,6 +27,7 @@ class CurrencyListState extends Equatable {
     this.allCurrencies = const [],
     this.filteredCurrencies = const [],
     this.searchQuery = '',
+    this.errorMessage = '',
     this.isRefreshing = false,
     this.lastUpdateTime,
   });
@@ -37,6 +39,7 @@ class CurrencyListState extends Equatable {
     String? searchQuery,
     bool? isRefreshing,
     DateTime? lastUpdateTime,
+    String? errorMessage,
   }) {
     return CurrencyListState(
       status: status ?? this.status,
@@ -45,6 +48,7 @@ class CurrencyListState extends Equatable {
       searchQuery: searchQuery ?? this.searchQuery,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 

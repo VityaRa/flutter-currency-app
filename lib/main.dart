@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Для дат
+import 'package:logging/logging.dart';
 import 'package:lr4/app/profile/profile_page.dart';
 import 'package:lr4/data/datasource_impl/preference_datasource_impl/preference_datasource_impl.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/sqflite_datasource_impl.dart';
 import 'package:lr4/data/repository_impl/settings_repository_impl.dart';
+import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/repository/settings_repository.dart';
+import 'package:lr4/domain/service/logger_service.dart';
 import 'package:provider/provider.dart'; // Для провайдеров репозиториев
 
 // Импортируем маршруты и экраны
@@ -34,10 +37,15 @@ import 'package:lr4/app/utils/theme/theme_data.dart' as custom_theme;
 import 'package:lr4/app/utils/theme_mode_ext.dart';
 
 void main() async {
+  LoggerService.initialize(level: Level.ALL); 
+  final appLogger = LoggerService.getAppLogger();
+  appLogger.info('Приложение запускается...');
   WidgetsFlutterBinding.ensureInitialized();
   
   // Инициализируем форматирование дат
   await initializeDateFormatting('ru_RU', null);
+
+
 
   final sharedPreferences = await SharedPreferences.getInstance();
   final secureStorage = FlutterSecureStorage();
@@ -79,6 +87,7 @@ class GlobalProviders extends StatelessWidget {
     // 1. Сначала внедряем Репозитории
     return MultiProvider(
       providers: [
+        Provider<PreferenceDatasource>.value(value: preferenceDatasource),
         Provider<CurrencyRepository>(
           create: (_) => CurrencyRepositoryImpl(
             restDatasource,

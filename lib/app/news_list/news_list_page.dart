@@ -7,6 +7,7 @@ import 'package:lr4/app/news_list/news_list_state.dart';
 import 'package:lr4/app/news_list/widgets/news_card.dart';
 import 'package:lr4/app/utils/context_ext.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
+import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/model/news_model.dart';
 import 'package:lr4/domain/repository/news_repository.dart';
 import 'package:lr4/app/widgets/error_view.dart';
@@ -24,11 +25,11 @@ class NewsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeColors colors = context.colors;
-
     return BlocProvider(
       create: (context) => NewsListCubit(
         repository: context.read<NewsRepository>(),
         networkService: context.read<NetworkService>(),
+        preferenceDatasource: context.read<PreferenceDatasource>(),
       ),
       child: Scaffold(
         appBar: AppBar(

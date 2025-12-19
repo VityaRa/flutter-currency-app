@@ -1,1 +1,1 @@
-enum DataSource { networkFirst, cacheFirst, networkOnly }
+enum DataSource { network, sqfLite, drift }
