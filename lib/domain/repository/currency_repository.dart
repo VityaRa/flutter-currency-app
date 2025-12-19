@@ -9,4 +9,6 @@ abstract interface class CurrencyRepository {
   Future<void> saveCurrencyList(List<CurrencyModel> value);
 
   Future<List<CurrencyModel>> getCurrencyListFromCache();
+
+  Future<void> clearCache();
 }

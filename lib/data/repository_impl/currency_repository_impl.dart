@@ -24,4 +24,7 @@ class CurrencyRepositoryImpl implements CurrencyRepository {
 
   @override
   Future<List<CurrencyModel>> getCurrencyListFromCache() => _dbDatasource.getCurrencyList();
+  
+  @override
+  Future<void> clearCache() => _dbDatasource.clearCurrencyList();
 }

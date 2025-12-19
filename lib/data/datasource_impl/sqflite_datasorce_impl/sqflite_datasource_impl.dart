@@ -57,4 +57,27 @@ class SqfliteDatasourceImpl implements DbDatasource {
 
     await batch.commit(noResult: true);
   }
+
+    @override
+  Future<void> clearNewsList() async {
+    final Database db = await _helper.database;
+    await db.delete(NewsTable.name);
+  }
+
+  @override
+  Future<void> clearCurrencyList() async {
+    final Database db = await _helper.database;
+    await db.delete(CurrencyTable.name);
+  }
+
+  @override
+  Future<void> clearAll() async {
+    final Database db = await _helper.database;
+    final Batch batch = db.batch();
+    
+    batch.delete(NewsTable.name);
+    batch.delete(CurrencyTable.name);
+    
+    await batch.commit(noResult: true);
+  }
 }

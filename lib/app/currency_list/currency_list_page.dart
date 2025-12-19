@@ -18,11 +18,6 @@ import 'package:lr4/domain/service/network_service.dart';
 class CurrencyListPage extends StatelessWidget {
   const CurrencyListPage({super.key});
 
-  // Вспомогательный метод для удобства
-  void _loadCurrencies(BuildContext context) {
-    context.read<CurrencyListCubit>().loadCurrencies();
-  }
-
   @override
   Widget build(BuildContext context) {
     final ThemeColors colors = context.colors;
@@ -31,7 +26,7 @@ class CurrencyListPage extends StatelessWidget {
       create: (context) => CurrencyListCubit(
         repository: context.read<CurrencyRepository>(),
         networkService: context.read<NetworkService>(),
-      )..loadCurrencies(), // Запускаем загрузку сразу
+      )..loadCurrencies(),
       
       child: Scaffold(
         appBar: AppBar(
@@ -42,183 +37,147 @@ class CurrencyListPage extends StatelessWidget {
             onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           ),
         ),
-        body: BlocConsumer<CurrencyListCubit, CurrencyListState>(
-          listener: (context, state) {
-            // Можно добавить обработку каких-либо событий при изменении состояния
-          },
-          builder: (context, state) {
-            // Получаем Cubit для доступа к методам
-            final cubit = context.read<CurrencyListCubit>();
-            
-            // Флаг, показывающий что данные были загружены ранее (есть кэш)
-            final hasCachedData = state.allCurrencies.isNotEmpty;
-            if (hasCachedData) {
-              print("Есть кэш");
-            }
-            
-            // 1. Ошибка сети при первой загрузке (нет кэшированных данных)
-            if (state.status == CurrencyListStatus.networkError && !hasCachedData) {
-               return ErrorView(
-                 message: 'Нет подключения к интернету. Проверьте настройки сети.',
-                 onRetry: () => _loadCurrencies(context),
-               );
-            }
-            
-            // 2. Ошибка сети, но есть кэшированные данные
-            if (state.status == CurrencyListStatus.networkError && hasCachedData) {
-              return Column(
-                children: [
-                  // Баннер с предупреждением об отсутствии сети
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    color: Colors.orange[100],
-                    child: Row(
-                      children: [
-                        Icon(Icons.wifi_off, color: Colors.orange[800]),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Нет подключения к интернету. Показаны ранее загруженные курсы',
-                            style: TextStyle(color: Colors.orange[800]),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Поиск и список кэшированных данных
-                  _buildContentWithSearch(context, state, colors, showRefresh: false),
-                ],
-              );
-            }
-            
-            // 3. Ошибка сервера при первой загрузке (нет кэшированных данных)
-            if (state.status == CurrencyListStatus.failure && !hasCachedData) {
-               return ErrorView(
-                 message: 'Не удалось загрузить курсы валют. Провробуйте еще раз.',
-                 onRetry: () => _loadCurrencies(context),
-               );
-            }
-            
-            // 4. Ошибка сервера, но есть кэшированные данные
-            if (state.status == CurrencyListStatus.failure && hasCachedData) {
-              return Column(
-                children: [
-                  // Баннер с ошибкой сервера
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    color: Colors.red[50],
-                    child: Row(
-                      children: [
-                        Icon(Icons.error_outline, color: Colors.red[800]),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Не удалось загрузить новые курсы. Показаны ранее загруженные',
-                            style: TextStyle(color: Colors.red[800]),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Поиск и список кэшированных данных
-                  _buildContentWithSearch(context, state, colors, showRefresh: false),
-                ],
-              );
-            }
-            
-            // 5. Загрузка при первой загрузке (нет кэшированных данных)
-            if (state.status == CurrencyListStatus.loading && !hasCachedData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            
-            // 6. Загрузка новых данных при наличии кэшированных
-            if (state.status == CurrencyListStatus.loading && hasCachedData) {
-              return Column(
-                children: [
-                  // Индикатор обновления поверх кэшированных данных
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    color: Colors.blue[50],
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Обновление курсов...',
-                          style: TextStyle(color: Colors.blue[700]),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Поиск и список кэшированных данных
-                  _buildContentWithSearch(context, state, colors, showRefresh: false),
-                ],
-              );
-            }
-            
-            // 7. Если данных нет (даже после успешной загрузки)
-            if (state.allCurrencies.isEmpty) {
-              return const Center(child: Text('Список пуст'));
-            }
-
-            // 8. Успешная загрузка или отображение кэшированных данных
-            return _buildContentWithSearch(context, state, colors, showRefresh: true);
-          },
-        ),
+        body: _CurrencyListBody(),
       ),
     );
   }
-  
-  // Вспомогательный метод для построения контента с поиском
-  Widget _buildContentWithSearch(
-    BuildContext context, 
-    CurrencyListState state, 
-    ThemeColors colors,
-    {required bool showRefresh}
-  ) {
-    final cubit = context.read<CurrencyListCubit>();
-    final data = state.filteredCurrencies;
-    
+}
+
+class _CurrencyListBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<CurrencyListCubit, CurrencyListState>(
+      listener: (context, state) {
+        // Можно добавить обработку событий если нужно
+      },
+      builder: (context, state) {
+        final hasCachedData = state.allCurrencies.isNotEmpty;
+
+        // 1. Ошибка сети при первой загрузке (нет кэшированных данных)
+        if (state.status == CurrencyListStatus.networkError && !hasCachedData) {
+          print("Ошибка сети при первой загрузке (нет кэшированных данных)");
+          return ErrorView(
+            message: 'Нет подключения к интернету. Проверьте настройки сети.',
+            onRetry: () => context.read<CurrencyListCubit>().loadCurrencies(),
+          );
+        }
+        
+        // 2. Ошибка сети, но есть кэшированные данные
+        if (state.status == CurrencyListStatus.networkError && hasCachedData) {
+          print(" Ошибка сети, но есть кэшированные данные");
+          return Column(
+            children: [
+              _buildNetworkErrorBanner(),
+              const SizedBox(height: 16),
+              _buildContentWithSearch(
+                context: context,
+                state: state,
+                showRefresh: false,
+              ),
+            ],
+          );
+        }
+        
+        // 3. Ошибка сервера при первой загрузке (нет кэшированных данных)
+        if (state.status == CurrencyListStatus.failure && !hasCachedData) {
+          print("Ошибка сервера при первой загрузке (нет кэшированных данных)");
+          return ErrorView(
+            message: 'Не удалось загрузить курсы валют. Попробуйте еще раз.',
+            onRetry: () => context.read<CurrencyListCubit>().loadCurrencies(),
+          );
+        }
+        
+        // 4. Ошибка сервера, но есть кэшированные данные
+        if (state.status == CurrencyListStatus.failure && hasCachedData) {
+          print("Ошибка сервера, но есть кэшированные данные");
+          return Column(
+            children: [
+              _buildServerErrorBanner(),
+              const SizedBox(height: 16),
+              _buildContentWithSearch(
+                context: context,
+                state: state,
+                showRefresh: false,
+              ),
+            ],
+          );
+        }
+        
+        // 5. Загрузка при первой загрузке (нет кэшированных данных)
+        if (state.status == CurrencyListStatus.loading && !hasCachedData) {
+          print("5. Загрузка при первой загрузке (нет кэшированных данных)");
+          return const Center(child: CircularProgressIndicator());
+        }
+        
+        // 6. Загрузка новых данных при наличии кэшированных
+        if (state.status == CurrencyListStatus.loading && hasCachedData) {
+          print("Загрузка новых данных при наличии кэшированных");
+          return Column(
+            children: [
+              _buildLoadingBanner(),
+              const SizedBox(height: 16),
+              _buildContentWithSearch(
+                context: context,
+                state: state,
+                showRefresh: false,
+              ),
+            ],
+          );
+        }
+        
+        // 7. Если данных нет
+        if (state.allCurrencies.isEmpty) {
+          return const Center(child: Text('Список пуст'));
+        }
+
+          print("8. Успешная загрузка или отображение кэшированных данных");
+
+        // 8. Успешная загрузка или отображение кэшированных данных
+        return _buildContentWithSearch(
+          context: context,
+          state: state,
+          showRefresh: true,
+        );
+      },
+    );
+  }
+
+  Widget _buildContentWithSearch({
+    required BuildContext context,
+    required CurrencyListState state,
+    required bool showRefresh,
+  }) {
     return Column(
       children: [
         // Поиск
         Padding(
           padding: const EdgeInsets.fromLTRB(22, 10, 22, 20),
           child: SearchView(
-            onChanged: (query) => cubit.filterCurrencies(query), 
+            onChanged: (query) => context.read<CurrencyListCubit>().filterCurrencies(query),
           ),
         ),
         Expanded(
           child: showRefresh 
             ? RefreshIndicator(
                 onRefresh: () async {
-                  // Вызываем Cubit для повторной загрузки
-                  await cubit.loadCurrencies();
+                  await context.read<CurrencyListCubit>().loadCurrencies();
                 },
-                child: _buildCurrencyList(data, context),
+                child: _buildCurrencyList(state.filteredCurrencies),
               )
-            : _buildCurrencyList(data, context),
+            : _buildCurrencyList(state.filteredCurrencies),
         ),
       ],
     );
   }
-  
-  // Вспомогательный метод для построения списка валют
-  Widget _buildCurrencyList(List<dynamic> data, BuildContext context) {
+
+  Widget _buildCurrencyList(List<dynamic> data) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth > 500;
         
         if (isWide) {
           return GridView.builder(
+            key: const PageStorageKey<String>('currency_grid'),
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -232,6 +191,7 @@ class CurrencyListPage extends StatelessWidget {
         }
         
         return ListView.separated(
+          key: const PageStorageKey<String>('currency_list'),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
           itemCount: data.length,
           separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -240,6 +200,66 @@ class CurrencyListPage extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildNetworkErrorBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Colors.orange[100],
+      child: Row(
+        children: [
+          Icon(Icons.wifi_off, color: Colors.orange[800]),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Нет подключения к интернету. Показаны ранее загруженные курсы',
+              style: TextStyle(color: Colors.orange[800]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServerErrorBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Colors.red[50],
+      child: Row(
+        children: [
+          Icon(Icons.error_outline, color: Colors.red[800]),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Не удалось загрузить новые курсы. Показаны ранее загруженные',
+              style: TextStyle(color: Colors.red[800]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Colors.blue[50],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            'Обновление курсов...',
+            style: TextStyle(color: Colors.blue[700]),
+          ),
+        ],
+      ),
     );
   }
 }

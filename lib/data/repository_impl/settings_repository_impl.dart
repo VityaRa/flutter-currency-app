@@ -1,17 +1,26 @@
 import 'dart:async';
 
+import 'package:lr4/domain/datasource/db_datasource.dart';
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/model/app_theme_mode.dart';
+import 'package:lr4/domain/model/data_source.dart';
 import 'package:lr4/domain/repository/settings_repository.dart';
 
-
 class SettingsRepositoryImpl implements SettingsRepository {
-  SettingsRepositoryImpl(this._datasource);
+  SettingsRepositoryImpl(
+    this._datasource,
+    this._dbDatasource
+  );
 
   final PreferenceDatasource _datasource;
+  final DbDatasource _dbDatasource;
 
-  final StreamController<bool> _authStatusController = StreamController.broadcast();
-  final StreamController<AppThemeMode> _themeModeController = StreamController.broadcast();
+  final StreamController<bool> _authStatusController =
+      StreamController.broadcast();
+  final StreamController<AppThemeMode> _themeModeController =
+      StreamController.broadcast();
+  final StreamController<DataSource> _datasourceController =
+      StreamController.broadcast();
 
   late bool _isAuth;
 
@@ -20,6 +29,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
     final bool isAuth = await getToken() != null;
     _authStatusController.add(isAuth);
     _isAuth = isAuth;
+    print(dataSource);
+
+    _datasourceController.add(dataSource);
   }
 
   @override
@@ -50,4 +62,22 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
     _authStatusController.add(token != null);
   }
+
+  @override
+  Future<void> clearAllCache() {
+    return _dbDatasource.clearAll();
+  }
+
+  @override
+  Future<void> setDataSource(DataSource source) async {
+    print(source);
+    await _datasource.setSelectedDataSource(source);
+    _datasourceController.add(source);
+  }
+
+  @override
+  Stream<DataSource> get dataSourceStream => _datasourceController.stream;
+
+  @override
+  DataSource get dataSource => _datasource.selectedDatasource;
 }

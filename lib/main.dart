@@ -95,7 +95,7 @@ class GlobalProviders extends StatelessWidget {
           create: (_) => networkService,
         ),
         Provider<SettingsRepository>(
-          create: (_) => SettingsRepositoryImpl(preferenceDatasource),
+          create: (_) => SettingsRepositoryImpl(preferenceDatasource, dbDatasource),
         ),
       ],
       child: child,
