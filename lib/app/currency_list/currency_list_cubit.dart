@@ -1,7 +1,5 @@
 // lib/app/currency_list/currency_list_cubit.dart
 
-
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lr4/app/currency_list/currency_list_state.dart';
 import 'package:lr4/domain/model/currency_model.dart';
@@ -15,11 +13,9 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
 
   CurrencyListCubit({
     required CurrencyRepository repository,
-    required NetworkService networkService, 
-  })
-
-      : _repository = repository,
-      _networkService = networkService,
+    required NetworkService networkService,
+  })  : _repository = repository,
+        _networkService = networkService,
         super(const CurrencyListState());
 
   Future<void> loadCurrencies() async {
@@ -39,8 +35,11 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
       emit(state.copyWith(
         status: CurrencyListStatus.success,
         allCurrencies: result,
-        filteredCurrencies: result, // Изначально фильтрованный список равен полному
+        filteredCurrencies:
+            result, // Изначально фильтрованный список равен полному
       ));
+
+      _repository.saveCurrencyList(result);
     } catch (e) {
       // Здесь можно логировать ошибку
       emit(state.copyWith(status: CurrencyListStatus.failure));

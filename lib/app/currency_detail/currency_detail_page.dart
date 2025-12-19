@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:lr4/app/currency_detail/currency_detail_cubit.dart';
+import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/domain/repository/currency_repository.dart';
 import 'package:lr4/domain/service/network_service.dart';
 
@@ -17,6 +19,8 @@ class CurrencyDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeFonts fonts = context.fonts;
+    final ThemeColors colors = context.colors;
     return BlocProvider(
       create: (context) => CurrencyDetailCubit(
         repository: context.read<CurrencyRepository>(),
@@ -61,7 +65,7 @@ class CurrencyDetailPage extends StatelessWidget {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.white,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -69,14 +73,11 @@ class CurrencyDetailPage extends StatelessWidget {
                       children: [
                         Text(
                           DateFormat('dd.MM.yyyy').format(item.date),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: fonts.semiBold12,
                         ),
                         Text(
                           '${item.value.toStringAsFixed(4)} ₽',
-                          style: const TextStyle(
-                            color: Color(0xFF3929C7), 
-                            fontWeight: FontWeight.w600
-                          ),
+                          style: fonts.semiBold12.copyWith(color: colors.blueDepression),
                         ),
                       ],
                     ),

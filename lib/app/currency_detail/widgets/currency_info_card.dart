@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/theme/theme_data.dart';
 
+// @deprecated mb delete?
 class CurrencyInfoCard extends StatelessWidget {
   const CurrencyInfoCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ThemeFonts fonts = context.fonts;
+    final ThemeColors colors = context.colors;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 24, 8, 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

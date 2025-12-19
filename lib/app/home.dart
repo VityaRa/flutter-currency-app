@@ -5,6 +5,9 @@ import 'package:lr4/app/news_list/news_list_page.dart';
 import 'package:lr4/app/home/home_cubit.dart'; 
 import 'package:lr4/app/currency_list/currency_list_page.dart';
 import 'package:lr4/app/app_routes.dart';
+import 'package:lr4/app/profile/profile_page.dart';
+import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/theme/theme_data.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,6 +15,7 @@ class HomePage extends StatelessWidget {
   static const List<Widget> _pages = <Widget>[
     CurrencyListPage(), // 0 Вкладка "Курс Валют"
     NewsListPage(), // 1 Вкладка "Новости"
+    ProfilePage(),
   ];
 
   @override
@@ -48,14 +52,19 @@ class HomePage extends StatelessWidget {
                 },
                 items: const [ // Добавляем const для оптимизации
                   BottomNavigationBarItem(
-                    icon: const TabWidget(assetPath: 'assets/icons/home.png', isSelected: false),
-                    activeIcon: const TabWidget(assetPath: 'assets/icons/home.png', isSelected: true),
+                    icon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: false),
+                    activeIcon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: true),
                     label: 'Курс Валют',
                   ),
                   BottomNavigationBarItem(
-                    icon: const TabWidget(assetPath: 'assets/icons/news.png', isSelected: false),
-                    activeIcon: const TabWidget(assetPath: 'assets/icons/news.png', isSelected: true),
+                    icon: TabWidget(assetPath: 'assets/icons/news.png', isSelected: false),
+                    activeIcon: TabWidget(assetPath: 'assets/icons/news.png', isSelected: true),
                     label: 'Новости',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: false),
+                    activeIcon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: true),
+                    label: 'Профиль',
                   ),
                 ],
                 // Fix для TabWidget, так как теперь он должен сам определять состояние
@@ -77,12 +86,12 @@ class TabWidget extends StatelessWidget {
   final bool isSelected;
   @override
   Widget build(BuildContext context) {
-    final BottomNavigationBarThemeData bottomBarTheme = Theme.of(context).bottomNavigationBarTheme;
+    final ThemeColors colors = context.colors;
     return SizedBox.square(
       dimension: 24,
       child: Image.asset(
         assetPath,
-        color: isSelected ? bottomBarTheme.selectedItemColor : bottomBarTheme.unselectedItemColor,
+        color: isSelected ? colors.bottomNavBarSelectedItem : colors.bottomNavBarUnselectedItem,
       ),
     );
   }

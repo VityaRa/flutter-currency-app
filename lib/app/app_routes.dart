@@ -4,6 +4,7 @@ abstract class AppRoutes {
   // Главные маршруты приложения
   static const String splash = '/'; // Стартовая страница (Splash Page)
   static const String home = '/home'; // Главный экран с BottomNavigationBar
+  static const String profile = '/profile'; // Главный экран с BottomNavigationBar
   
   // Маршруты внутри вкладок (Currency Stack)
   static const String currencyList = '/currencyList';

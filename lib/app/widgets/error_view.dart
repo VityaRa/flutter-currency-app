@@ -2,6 +2,8 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/theme/theme_data.dart';
 
 class ErrorView extends StatelessWidget {
   final String message;
@@ -15,29 +17,31 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeColors colors = context.colors;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
-              color: Colors.red,
+              color: colors.red,
               size: 50,
             ),
             const SizedBox(height: 10),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, color: Colors.black54),
+              style: TextStyle(fontSize: 16, color: colors.black),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
+                foregroundColor: colors.white,
               ),
               child: const Text('Повторить попытку'),
             ),

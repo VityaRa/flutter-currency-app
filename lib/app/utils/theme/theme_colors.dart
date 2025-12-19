@@ -18,6 +18,7 @@ abstract class _AppColors {
   static const dartToneInk = Color(0xFF121212);
   static const palladium = Color(0xFFB0B0B0);
   static const greenWrasse = Color(0xFF1FD522);
+  static const yellow = Color(0xFFFFC700);
 }
 
 class ThemeColors extends ThemeExtension<ThemeColors> {
@@ -56,6 +57,7 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
         platinumGranite: _AppColors.platinumGranite,
         tin: _AppColors.tin,
         greenWrasse: _AppColors.greenWrasse,
+        favourite: _AppColors.yellow,
       );
 
   factory ThemeColors.light() => ThemeColors(brightness: Brightness.light);
@@ -96,6 +98,7 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     required this.platinumGranite,
     required this.tin,
     required this.greenWrasse,
+    required this.favourite,
   });
 
   final Brightness brightness;
@@ -119,6 +122,7 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
   final Color platinumGranite;
   final Color tin;
   final Color greenWrasse;
+  final Color favourite;
 
   @override
   ThemeColors copyWith({
@@ -148,6 +152,7 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
     Color? dartToneInk,
     Color? palladium,
     Color? greenWrasse,
+    Color? favourite,
   }) {
     return ThemeColors.raw(
       brightness: brightness ?? this.brightness,
@@ -171,6 +176,7 @@ class ThemeColors extends ThemeExtension<ThemeColors> {
       platinumGranite: platinumGranite ?? this.platinumGranite,
       tin: tin ?? this.tin,
       greenWrasse: greenWrasse ?? this.greenWrasse,
+      favourite: favourite ?? this.favourite,
     );
   }
 

@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/app/utils/url_launcher.dart'; // Из ваших материалов
 import 'package:lr4/domain/model/news_model.dart'; // Из шага 2.1
 
@@ -20,13 +22,15 @@ class NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DateTime? date = model.date;
+    final ThemeFonts fonts = context.fonts;
+    final ThemeColors colors = context.colors;
 
     return GestureDetector(
       onTap: () => tryLaunchUrl(model.link),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colors.cardColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -34,12 +38,7 @@ class NewsCard extends StatelessWidget {
           children: [
             Text(
               model.title,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
+              style: fonts.semiBold12,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 6),
@@ -48,25 +47,12 @@ class NewsCard extends StatelessWidget {
                 children: [
                   if (date != null)
                     Text(
-                      // Необходимо убедиться, что пакет intl добавлен в pubspec.yaml
-                      // Если нет, запустите: flutter pub add intl
-                      DateFormat(_NewsConstants.newsDateTimeFormat, _NewsConstants.ruLocale).format(date),
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF505050),
-                      ),
-                    ),
-                  Text(
-                    _NewsConstants.resource,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF505050),
-                    ),
-                  ),
+                        DateFormat(_NewsConstants.newsDateTimeFormat,
+                                _NewsConstants.ruLocale)
+                            .format(date),
+                        style: fonts.regular12.copyWith(color: colors.tin)),
+                  Text(_NewsConstants.resource,
+                      style: fonts.regular12.copyWith(color: colors.tin)),
                 ],
               ),
             )
@@ -76,115 +62,3 @@ class NewsCard extends StatelessWidget {
     );
   }
 }
-
-
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import 'package:lr4/app/utils/url_launcher.dart'; // Твой url_launcher
-// import 'package:lr4/domain/model/news_model.dart'; //
-
-// class NewsCard extends StatelessWidget {
-//   const NewsCard({super.key, required this.model});
-
-//   final NewsModel model;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final date = model.date;
-//     // Форматирование даты
-//     final dateStr = date != null 
-//         ? DateFormat('E HH:mm dd.MM.yy', 'ru_RU').format(date) 
-//         : '';
-
-//     return GestureDetector(
-//       onTap: () => tryLaunchUrl(model.link),
-//       child: Container(
-//         padding: const EdgeInsets.all(16),
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(12),
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               model.title,
-//               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-//             ),
-//             const SizedBox(height: 8),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Text(dateStr, style: TextStyle(color: Colors.grey[600], fontSize: 11)),
-//                 Text('cbr.ru', style: TextStyle(color: Colors.grey[600], fontSize: 11)),
-//               ],
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-// import 'package:flutter/material.dart';
-// import 'package:lr4/app/utils/url_launcher.dart';
-
-// class NewsCard extends StatelessWidget {
-//   const NewsCard({super.key});
-
-//   static const String _url = 'https://flutter.dev';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: () => tryLaunchUrl(_url),
-//       child: Container(
-//         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(12),
-//         ),
-//         child: Column(
-//           children: [
-//             Text(
-//               'Вводятся новые правила допуска на финансовый рынок кредитных потребительских кооперативов',
-//               style: TextStyle(
-//                 fontFamily: 'Inter',
-//                 fontSize: 12,
-//                 fontWeight: FontWeight.w700,
-//                 color: Colors.black,
-//               ),
-//             ),
-//             Padding(
-//               padding: const EdgeInsets.only(top: 6),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text(
-//                     'Ср. 10:47 05.02.25',
-//                     style: TextStyle(
-//                       fontFamily: 'Inter',
-//                       fontSize: 12,
-//                       fontWeight: FontWeight.w400,
-//                       color: Color(0xFF505050),
-//                     ),
-//                   ),
-//                   Text(
-//                     'cbr.ru',
-//                     style: TextStyle(
-//                       fontFamily: 'Inter',
-//                       fontSize: 12,
-//                       fontWeight: FontWeight.w400,
-//                       color: Color(0xFF505050),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

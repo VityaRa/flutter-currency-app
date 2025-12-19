@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart'; // Для дат
+import 'package:lr4/app/profile/profile_page.dart';
 import 'package:lr4/data/datasource_impl/preference_datasource_impl/preference_datasource_impl.dart';
 import 'package:lr4/data/datasource_impl/sqflite_datasorce_impl/sqflite_datasource_impl.dart';
 import 'package:lr4/data/repository_impl/settings_repository_impl.dart';
@@ -177,6 +178,7 @@ class _AppState extends State<App> {
               );
             },
             AppRoutes.settings: (context) => const SettingsPage(),
+            AppRoutes.profile: (context) => const ProfilePage(),
             AppRoutes.resultScreen: (context) => const ResultScreen(),
           },
           
