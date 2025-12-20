@@ -4,12 +4,12 @@ import 'package:equatable/equatable.dart';
 import 'package:lr4/domain/model/currency_model.dart';
 
 enum CurrencyListStatus {
-  initial,      // Начальное состояние
-  cached,       // Показаны кэшированные данные
-  loading,      // Загрузка (без данных)
-  refreshing,   // Обновление данных (есть кэшированные)
-  success,      // Успешная загрузка
-  failure,      // Ошибка загрузки
+  initial, // Начальное состояние
+  cached, // Показаны кэшированные данные
+  loading, // Загрузка (без данных)
+  refreshing, // Обновление данных (есть кэшированные)
+  success, // Успешная загрузка
+  failure, // Ошибка загрузки
   networkError, // Ошибка сети
 }
 
@@ -52,13 +52,29 @@ class CurrencyListState extends Equatable {
     );
   }
 
+  CurrencyListState setLastUpdateTime(DateTime? time) {
+    return CurrencyListState(
+      status: status,
+      allCurrencies: allCurrencies,
+      filteredCurrencies: filteredCurrencies,
+      searchQuery: searchQuery,
+      errorMessage: errorMessage,
+      isRefreshing: isRefreshing,
+      lastUpdateTime: time,
+    );
+  }
+
+  CurrencyListState clearLastUpdateTime() {
+    return setLastUpdateTime(null);
+  }
+
   @override
   List<Object?> get props => [
-    status,
-    allCurrencies,
-    filteredCurrencies,
-    searchQuery,
-    isRefreshing,
-    lastUpdateTime,
-  ];
+        status,
+        allCurrencies,
+        filteredCurrencies,
+        searchQuery,
+        isRefreshing,
+        lastUpdateTime,
+      ];
 }

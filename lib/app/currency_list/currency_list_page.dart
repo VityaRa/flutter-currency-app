@@ -150,34 +150,48 @@ class CurrencyListPage extends StatelessWidget {
           ),
         ),
 
-        // Информация о последнем обновлении
-        if (state.lastUpdateTime != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                'Обновлено: ${DateFormat(_CurrencyListConstants.timeFormat, _CurrencyListConstants.ruLocale).format(state.lastUpdateTime!)}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colors.grey,
-                ),
-              ),
-            ),
-          ),
-
-        if (state.status == CurrencyListStatus.cached)
+        // Объединенная строка с информацией о статусе и времени обновления
+        if (state.lastUpdateTime != null ||
+            state.status == CurrencyListStatus.cached ||
+            state.status == CurrencyListStatus.networkError ||
+            state.status == CurrencyListStatus.failure)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
             child: Row(
               children: [
-                Icon(Icons.wifi_off, size: 14, color: colors.grey),
-                const SizedBox(width: 4),
-                Text(
-                  'Кэшированные данные',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colors.grey,
+                // Иконка статуса
+                if (state.status == CurrencyListStatus.cached ||
+                    state.status == CurrencyListStatus.networkError ||
+                    state.status == CurrencyListStatus.failure)
+                  Row(
+                    children: [
+                      Icon(
+                        state.status == CurrencyListStatus.networkError
+                            ? Icons.wifi_off
+                            : Icons.cached,
+                        size: 14,
+                        color: colors.grey,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        state.status == CurrencyListStatus.networkError
+                            ? 'Оффлайн режим'
+                            : 'Кэшированные данные',
+                        style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
+                      ),
+                      const SizedBox(width: 12), // Отступ между частями
+                    ],
+                  ),
+                
+                // Время обновления (выравнивается по правому краю)
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Обновлено: ${DateFormat(_CurrencyListConstants.timeFormat, _CurrencyListConstants.ruLocale).format(state.lastUpdateTime!)}',
+                        style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
+
+                    ),
                   ),
                 ),
               ],

@@ -113,149 +113,53 @@ class NewsListPage extends StatelessWidget {
 
   Widget _buildContent(
       BuildContext context, NewsListState state, ThemeColors colors) {
-        _logger.info("lastUpdateTime ${state.lastUpdateTime}");
+    _logger.info("lastUpdateTime ${state.lastUpdateTime}");
 
     return Column(
       children: [
-        // Баннер с ошибкой сети (если есть кэш)
-        // if (state.status == NewsListStatus.networkError)
-        //   Container(
-        //     width: double.infinity,
-        //     padding: const EdgeInsets.all(12),
-        //     color: colors.red,
-        //     child: Row(
-        //       children: [
-        //         Icon(Icons.wifi_off, size: 20, color: colors.red),
-        //         const SizedBox(width: 8),
-        //         Expanded(
-        //           child: Text(
-        //             state.errorMessage ??
-        //                 'Нет подключения к интернету. Показаны кэшированные новости.',
-        //             style: TextStyle(
-        //               fontSize: 14,
-        //               color: colors.red,
-        //             ),
-        //           ),
-        //         ),
-        //         TextButton(
-        //           onPressed: () => _retry(context),
-        //           child: Text(
-        //             'ПОВТОРИТЬ',
-        //             style: TextStyle(
-        //               fontSize: 12,
-        //               fontWeight: FontWeight.bold,
-        //               color: colors.red,
-        //             ),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-
-        // // Баннер с ошибкой загрузки (если есть кэш)
-        // if (state.status == NewsListStatus.failure &&
-        //     state.allNews.isNotEmpty)
-        //   Container(
-        //     width: double.infinity,
-        //     padding: const EdgeInsets.all(12),
-        //     color: colors.red,
-        //     child: Row(
-        //       children: [
-        //         Icon(Icons.error_outline, size: 20, color: colors.red),
-        //         const SizedBox(width: 8),
-        //         Expanded(
-        //           child: Text(
-        //             state.errorMessage ??
-        //                 'Не удалось обновить новости. Показаны ранее загруженные.',
-        //             style: TextStyle(
-        //               fontSize: 14,
-        //               color: colors.red,
-        //             ),
-        //           ),
-        //         ),
-        //         TextButton(
-        //           onPressed: () => _retry(context),
-        //           child: Text(
-        //             'ПОВТОРИТЬ',
-        //             style: TextStyle(
-        //               fontSize: 12,
-        //               fontWeight: FontWeight.bold,
-        //               color: colors.red,
-        //             ),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-
-        // // Индикатор обновления
-        // if (state.isRefreshing)
-        //   Container(
-        //     width: double.infinity,
-        //     padding: const EdgeInsets.all(12),
-        //     color: colors.primary,
-        //     child: Row(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: [
-        //         SizedBox(
-        //           width: 20,
-        //           height: 20,
-        //           child: CircularProgressIndicator(
-        //             strokeWidth: 2,
-        //             color: colors.primary,
-        //           ),
-        //         ),
-        //         const SizedBox(width: 12),
-        //         Text(
-        //           'Обновление новостей...',
-        //           style: TextStyle(
-        //             fontSize: 14,
-        //             color: colors.primary,
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-
-        // Информация о последнем обновлении
-        
-        if (state.lastUpdateTime != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                'Обновлено: ${DateFormat(_NewsListConstants.timeFormat, _NewsListConstants.ruLocale).format(state.lastUpdateTime!)}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colors.grey,
-                ),
-              ),
-            ),
-          ),
-
-        if (state.status == NewsListStatus.cached ||
+        // Объединенная строка с информацией о статусе и времени обновления
+        if (state.lastUpdateTime != null ||
+            state.status == NewsListStatus.cached ||
             state.status == NewsListStatus.networkError ||
             state.status == NewsListStatus.failure)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 4),
             child: Row(
               children: [
-                Icon(
-                  state.status == NewsListStatus.networkError
-                      ? Icons.wifi_off
-                      : Icons.cached,
-                  size: 14,
-                  color: colors.grey,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  state.status == NewsListStatus.networkError
-                      ? 'Оффлайн режим'
-                      : 'Кэшированные данные',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: colors.grey,
+                // Иконка и текст статуса
+                if (state.status == NewsListStatus.cached ||
+                    state.status == NewsListStatus.networkError ||
+                    state.status == NewsListStatus.failure)
+                  Row(
+                    children: [
+                      Icon(
+                        state.status == NewsListStatus.networkError
+                            ? Icons.wifi_off
+                            : Icons.cached,
+                        size: 14,
+                        color: colors.grey,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        state.status == NewsListStatus.networkError
+                            ? 'Оффлайн режим'
+                            : 'Кэшированные данные',
+                        style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
+
+                      ),
+                      const SizedBox(width: 12), // Отступ между частями
+                    ],
+                  ),
+                
+                // Время обновления (выравнивается по правому краю)
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'Обновлено: ${DateFormat(_NewsListConstants.timeFormat, _NewsListConstants.ruLocale).format(state.lastUpdateTime!)}',
+                        style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
+
+                    ),
                   ),
                 ),
               ],

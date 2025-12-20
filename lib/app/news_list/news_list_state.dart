@@ -2,12 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:lr4/domain/model/news_model.dart';
 
 enum NewsListStatus {
-  initial,      // Начальное состояние
-  cached,       // Показаны кэшированные данные
-  loading,      // Загрузка (без данных)
-  refreshing,   // Обновление данных (есть кэшированные)
-  success,      // Успешная загрузка
-  failure,      // Ошибка загрузки
+  initial, // Начальное состояние
+  cached, // Показаны кэшированные данные
+  loading, // Загрузка (без данных)
+  refreshing, // Обновление данных (есть кэшированные)
+  success, // Успешная загрузка
+  failure, // Ошибка загрузки
   networkError, // Ошибка сети
 }
 
@@ -42,12 +42,26 @@ class NewsListState extends Equatable {
     );
   }
 
+  NewsListState setLastUpdateTime(DateTime? time) {
+    return NewsListState(
+      status: status,
+      allNews: allNews,
+      isRefreshing: isRefreshing,
+      errorMessage: errorMessage,
+      lastUpdateTime: time,
+    );
+  }
+
+  NewsListState clearLastUpdateTime() {
+    return setLastUpdateTime(null);
+  }
+
   @override
   List<Object?> get props => [
-    status,
-    allNews,
-    isRefreshing,
-    lastUpdateTime,
-    errorMessage,
-  ];
+        status,
+        allNews,
+        isRefreshing,
+        lastUpdateTime,
+        errorMessage,
+      ];
 }

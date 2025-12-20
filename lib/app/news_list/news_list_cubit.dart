@@ -14,7 +14,6 @@ class NewsListCubit extends Cubit<NewsListState> {
   final PreferenceDatasource _preferenceDatasource;
   static final Logger _logger = LoggerService.getCubitLogger('NewsList');
 
-
   // Флаги для имитации ошибок (можно вынести в конфиг)
   static const bool simulateNetworkError = false;
   static const bool simulateServerError = false;
@@ -32,27 +31,30 @@ class NewsListCubit extends Cubit<NewsListState> {
 
   Future<void> _tryLoadCache() async {
     final cachedNews = await _repository.getCachedNewsList();
-    _logger.info("_tryLoadCache Получено: ${cachedNews.length} новостей из кэша");
+    _logger
+        .info("_tryLoadCache Получено: ${cachedNews.length} новостей из кэша");
     if (cachedNews.isNotEmpty) {
       final lastUpdated = await _repository.getLastUpdate();
-      _logger.info("_tryLoadCache Отображены: ${cachedNews.length} новостей из кэша");
+      _logger.info(
+          "_tryLoadCache Отображены: ${cachedNews.length} новостей из кэша");
       emit(state.copyWith(
         allNews: cachedNews,
         lastUpdateTime: lastUpdated,
-
       ));
       return;
     }
 
-      emit(state.copyWith(
-        allNews: [],
-      ));
+    emit(state.copyWith(
+      allNews: [],
+    ));
+    emit(state.clearLastUpdateTime());
 
     _logger.info("_tryLoadCache кэш пустой: новости берем из сети");
   }
 
   Future<void> _tryLoadFromNetwork() async {
-    if (_preferenceDatasource.selectedDatasource == DataSource.drift || _preferenceDatasource.selectedDatasource == DataSource.sqfLite) {
+    if (_preferenceDatasource.selectedDatasource == DataSource.drift ||
+        _preferenceDatasource.selectedDatasource == DataSource.sqfLite) {
       return;
     }
 
@@ -62,7 +64,7 @@ class NewsListCubit extends Cubit<NewsListState> {
     final isConnected =
         simulateNetworkError ? false : await _networkService.isConnected();
     _logger.info("_tryLoadFromNetwork состояние сети: $isConnected");
-  
+
     if (!isConnected) {
       // Если нет сети, но есть кэшированные данные - показываем их
       if (state.allNews.isNotEmpty) {
@@ -99,8 +101,9 @@ class NewsListCubit extends Cubit<NewsListState> {
         allNews: result,
         isRefreshing: false,
         errorMessage: null,
-        lastUpdateTime: null,
       ));
+      emit(state.clearLastUpdateTime());
+
       _logger.info("_tryLoadFromNetwork - завершно с успхеом");
     } catch (e) {
       if (state.allNews.isNotEmpty) {

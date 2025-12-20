@@ -52,9 +52,12 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
     }
 
     emit(state.copyWith(
-      allCurrencies: [],
+      allCurrencies: cachedCurrencies,
       filteredCurrencies: cachedCurrencies,
     ));
+
+      _logger.info("_tryLoadCache lastUpdated: cleared");
+    emit(state.clearLastUpdateTime());
 
     _logger.info("_tryLoadCache кэш пустой: новости берем из сети");
   }
@@ -109,6 +112,9 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
         errorMessage: null,
         lastUpdateTime: null,
       ));
+      emit(state.clearLastUpdateTime());
+      _logger.info("_tryLoadCache lastUpdated: cleared");
+
       _logger.info("_tryLoadFromNetwork - завершно с успхеом");
     } catch (e) {
       if (state.allCurrencies.isNotEmpty) {
@@ -125,89 +131,11 @@ class CurrencyListCubit extends Cubit<CurrencyListState> {
           isRefreshing: false,
           errorMessage: 'Не удалось загрузить новости. Попробуйте еще раз.',
         ));
+        emit(state.clearLastUpdateTime());
       }
-      await _tryLoadCache();
+      // await _tryLoadCache();
     }
   }
-
-  // Future<void> loadCurrencies() async {
-  //   // await Future.delayed(const Duration(seconds: 2));
-
-  //   // Не прерываем загрузку, если уже грузим
-  //   if (state.status == CurrencyListStatus.refreshing) return;
-
-  //   // Проверяем подключение к сети
-  //   final isConnected = await _networkService.isConnected();
-
-  //   if (!isConnected) {
-  //     // Если нет сети, но есть кэшированные данные - показываем их с индикатором
-  //     if (state.allCurrencies.isNotEmpty) {
-  //       emit(state.copyWith(
-  //         status: CurrencyListStatus.networkError,
-  //         lastUpdateTime: DateTime.now(),
-  //       ));
-  //     } else {
-  //       // Если нет сети и нет кэша - показываем полную ошибку
-  //       emit(state.copyWith(
-  //         status: CurrencyListStatus.networkError,
-  //         allCurrencies: [],
-  //         filteredCurrencies: [],
-  //       ));
-  //     }
-  //     return;
-  //   }
-
-  //   // Устанавливаем статус обновления (сохраняем текущие данные)
-  //   emit(state.copyWith(
-  //     status: CurrencyListStatus.refreshing,
-  //     isRefreshing: true,
-  //   ));
-
-  //   try {
-  //     print('Загрузка данных из сети');
-  //     // Загружаем свежие данные
-  //     final List<CurrencyModel> result = await _repository.getCurrencyList();
-
-  //     // Сохраняем данные в кэш
-  //     await _repository.saveCurrencyList(result);
-
-  //     // Обновляем состояние с новыми данными
-  //     final newState = state.copyWith(
-  //       status: CurrencyListStatus.success,
-  //       allCurrencies: result,
-  //       filteredCurrencies: result,
-  //       searchQuery: state.searchQuery,
-  //       isRefreshing: false,
-  //       lastUpdateTime: DateTime.now(),
-  //     );
-
-  //     // Если был поисковый запрос, применяем фильтрацию к новым данным
-  //     // if (state.searchQuery.isNotEmpty) {
-  //     //   newState.filteredCurrencies = _applyFilter(result, state.searchQuery);
-  //     // }
-
-  //     emit(newState);
-  //   } catch (e) {
-  //     print('Ошибка загрузки валют: $e');
-
-  //     // Если произошла ошибка, но есть данные - показываем их с ошибкой
-  //     if (state.allCurrencies.isNotEmpty) {
-  //       emit(state.copyWith(
-  //         status: CurrencyListStatus.failure,
-  //         isRefreshing: false,
-  //         lastUpdateTime: DateTime.now(),
-  //       ));
-  //     } else {
-  //       // Если нет данных - показываем полную ошибку
-  //       emit(state.copyWith(
-  //         status: CurrencyListStatus.failure,
-  //         allCurrencies: [],
-  //         filteredCurrencies: [],
-  //         isRefreshing: false,
-  //       ));
-  //     }
-  //   }
-  // }
 
   void filterCurrencies(String query) {
     final result = _applyFilter(state.allCurrencies, query);

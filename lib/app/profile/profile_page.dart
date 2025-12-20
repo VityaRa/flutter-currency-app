@@ -8,8 +8,11 @@ import 'package:lr4/app/splash_page.dart';
 import 'package:lr4/app/utils/context_ext.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/app/utils/theme_mode_ext.dart';
+import 'package:lr4/data/datasource_impl/model/currency_dto.dart';
 import 'package:lr4/domain/model/app_theme_mode.dart';
 import 'package:lr4/domain/model/data_source.dart';
+import 'package:lr4/domain/repository/currency_repository.dart';
+import 'package:lr4/domain/repository/news_repository.dart';
 import 'package:lr4/domain/repository/settings_repository.dart';
 import 'package:lr4/domain/service/logger_service.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +38,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   SettingsRepository get _settingsRepository =>
       context.read<SettingsRepository>();
+
+  NewsRepository get _newsRepository =>
+      context.read<NewsRepository>();
+
+    CurrencyRepository get _currencyRepository =>
+      context.read<CurrencyRepository>();
 
   @override
   void dispose() {
@@ -73,7 +82,8 @@ class _ProfilePageState extends State<ProfilePage> {
       try {
         // Очищаем кэш через репозитории
         await _settingsRepository.clearAllCache();
-
+        await _newsRepository.clearCache();
+        await _currencyRepository.clearCache();
         // Показываем уведомление об успехе
         scaffoldMessenger.showSnackBar(
           const SnackBar(
