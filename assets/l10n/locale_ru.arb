@@ -1,0 +1,177 @@
+{
+  "login": "Войти",
+  "logout": "Выйти",
+  "currencyRate": "Курс Валют",
+  "news": "Новости",
+  "profile": "Профиль",
+  "theme": "Тема",
+  "light": "Светлая",
+  "dark": "Тёмная",
+  "system": "Системная",
+  "search": "Поиск",
+  "asNominalTemplate": "{value, plural, one{# штука} few{# штуки} many{# штук} other{# штук}}",
+  "@asNominalTemplate": {
+    "description": "Plural template for item quantity"
+  },
+  "asNominal": "{value, plural, =0{0 штук}=1{1 штука}=2{2 штуки}few{# штуки}many{# штук}other{# штук}}",
+  "@asNominal": {
+    "description": "Plural form for item quantity",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "checkNetwork": "Нет подключения к интернету. Проверьте настройки сети.",
+  "cannotLoadCurrencies": "Не удалось загрузить курсы валют.",
+  "cannotLoadNews": "Не удалось загрузить новости.",
+  "repeat": "Повторить",
+  "noNews": "Нет новостей",
+  "noData": "Нет данных",
+  "noCurrencyData": "{count, plural, =0{Нет данных о валютах}=1{Нет данных о валюте}other{Нет данных о валютах}}",
+  "@noCurrencyData": {
+    "description": "Plural form for no currency data message",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "offlineMode": "Оффлайн режим",
+  "cachedData": "Кэшированные данные",
+  "updated": "Обновлено",
+  "clearCache": "Очистка кэша",
+  "cacheCleared": "Кэш успешно очищен",
+  "removeAllSavedData": "Удалить все сохранённые данные",
+  "cacheClearError": "Ошибка при очистке кэша",
+  "confirmClearCache": "Вы уверены, что хотите очистить все сохранённые данные? При следующем запуске приложения данные будут загружены заново.",
+  "cancel": "Отмена",
+  "clear": "Очистить",
+  "restartApp": "Перезагрузка приложения",
+  "chosedDataSource": "Вы выбрали источник данных",
+  "restartForApply": "Для применения изменений приложение необходимо перезагрузить.",
+  "restart": "Перезагрузить",
+  "dataSource": "Источник данных",
+  "applyNewDatasource": "Применяем новый источник данных",
+  "localStorageInfo": "Используется {datasource} для локального хранения данных",
+  "@localStorageInfo": {
+    "description": "Информация об источнике локального хранения данных",
+    "placeholders": {
+      "datasource": {
+        "type": "String",
+        "example": "SharedPreferences"
+      }
+    }
+  },
+  "dataWillLoadedViaNetwork": "Данные будут загружаться из сети или из локального хранилища SQLite",
+  "returnDataScreen": "Экран для возврата результата",
+  "passedArguments": "Переданы аргументы: \"{text}\" и число {number}",
+    "@passedArguments": {
+    "description": "Text displaying passed arguments",
+    "placeholders": {
+      "text": {
+        "type": "String",
+        "example": "Example text"
+      },
+      "number": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+  "clickToReturn": "Нажмите \"Вернуть данные\", чтобы закрыть этот экран и отправить текущую дату и время.",
+  "returnDataButton": "Вернуть данные",
+  "confirmationMessage": "Операция подтверждена: {datetime}",
+  "@confirmationMessage": {
+    "description": "Confirmation message with date and time",
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "2024-01-15 14:30:45"
+      }
+    }
+  },
+  "noGivenData": "Нет переданных данных",
+  "settings": "Настройки",
+  "dataTransferDemo": "Передача данных в обоих направлениях:",
+  "navigateWithData": "Перейти на result_screen и передать данные",
+  "advancedNavigatorMethods": "Расширенные методы Navigator:",
+  "pushNamedAndRemoveUntil": "pushNamedAndRemoveUntil (На Главный Экран)",
+  "popUntil": "popUntil (До Главного Экрана)",
+  "maybePop": "maybePop (Можно закрыть: {canPop})",
+    "@maybePop": {
+    "description": "Maybe pop button text",
+    "placeholders": {
+      "canPop": {
+        "type": "String",
+        "example": "true"
+      }
+    }
+  },
+  "modalElementsDemo": "Модальные элементы и обработка результатов:",
+  "dialogTitle": "Модальное окно",
+  "dialogContent": "Хотите подтвердить операцию?",
+  "cancelButton": "Отмена",
+  "confirmButton": "Подтвердить",
+  "bottomSheetTitle": "Выберите опцию",
+  "optionA": "Опция A",
+  "optionASelected": "Опция A выбрана",
+  "chooseDate": "Выберите дату",
+  "chooseTime": "Выберите время",
+  "dateSelected": "Выбрана дата: {date}",
+    "@dateSelected": {
+    "description": "Date selection confirmation",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-01-15"
+      }
+    }
+  },
+  "timeSelected": "Выбрано время: {time}",
+    "@timeSelected": {
+    "description": "Time selection confirmation",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "14:30"
+      }
+    }
+  },
+  "operationCancelled": "Отменено",
+  "operationConfirmed": "Подтверждено",
+  "resultReceived": "✅ Результат получен: {result}",
+    "@resultReceived": {
+    "description": "Result received confirmation",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Operation confirmed: 2024-01-15 14:30:45"
+      }
+    }
+  },
+  "noResult": "⚠️ Результат не был выбран.",
+  "resultDialog": "Результат Dialog: {result}",
+    "@resultDialog": {
+    "description": "Dialog result message",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Confirmed"
+      }
+    }
+  },
+  "resultBottomSheet": "Результат BottomSheet: {result}",
+    "@resultBottomSheet": {
+    "description": "Bottom sheet result message",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Option A selected"
+      }
+    }
+  },
+  "modalBottomSheet": "Нижнее модальное меню",
+  "details": "Детали",
+  "language": "Язык",
+  "languageRussian": "Русский",
+  "languageEnglish": "Английский",
+  "languageSpanish": "Испанский",
+  "changedTo": "изменен на"
+}

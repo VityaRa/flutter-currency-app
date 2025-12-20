@@ -43,7 +43,7 @@ class ErrorView extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: colors.white,
               ),
-              child: const Text('Повторить попытку'),
+              child: Text(context.loc.repeat),
             ),
           ],
         ),

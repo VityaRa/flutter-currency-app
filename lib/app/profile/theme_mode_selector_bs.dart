@@ -25,16 +25,26 @@ class ThemeModeSelectorBottomSheet extends StatelessWidget {
                 if (mode == null) return;
 
                 context.read<SettingsRepository>().setThemeMode(mode);
-
                 Navigator.pop(context, mode);
               },
               title: Text(
-                mode.title,
+                _getThemeName(context, mode),
                 style: context.fonts.regular16,
               ),
             ),
         ],
       ),
     );
+  }
+
+  String _getThemeName(BuildContext context, AppThemeMode theme) {
+    switch (theme) {
+      case AppThemeMode.system:
+        return context.loc.system;
+      case AppThemeMode.light:
+        return context.loc.light;
+      case AppThemeMode.dark:
+        return context.loc.dark;
+    }
   }
 }

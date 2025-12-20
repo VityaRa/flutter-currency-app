@@ -42,7 +42,7 @@ class CurrencyListPage extends StatelessWidget {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Курс Валют'),
+          title: Text(context.loc.currencyRate),
           automaticallyImplyLeading: false,
           leading: IconButton(
             icon: Icon(Icons.settings, color: colors.black),
@@ -58,7 +58,7 @@ class CurrencyListPage extends StatelessWidget {
             if (state.status == CurrencyListStatus.networkError) {
               return ErrorView(
                 message:
-                    'Нет подключения к интернету. Проверьте настройки сети.',
+                    context.loc.checkNetwork,
                 onRetry: () => _loadCurrencies(context),
               );
             }
@@ -66,7 +66,7 @@ class CurrencyListPage extends StatelessWidget {
             if (state.status == CurrencyListStatus.failure &&
                 state.allCurrencies.isEmpty) {
               return ErrorView(
-                message: 'Не удалось загрузить курсы валют.',
+                message: context.loc.cannotLoadCurrencies,
                 onRetry: () => _loadCurrencies(context),
               );
             }
@@ -90,7 +90,7 @@ class CurrencyListPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Нет данных о валютах',
+                      context.loc.noCurrencyData(0),
                       style: TextStyle(
                         fontSize: 16,
                         color: colors.grey,
@@ -100,7 +100,7 @@ class CurrencyListPage extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () => _loadCurrencies(context),
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Повторить'),
+                      label: Text(context.loc.repeat),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colors.primary,
                         foregroundColor: colors.white,
@@ -111,7 +111,7 @@ class CurrencyListPage extends StatelessWidget {
               );
             }
             // Если данных вообще нет
-            return const Center(child: Text('Нет данных о валютах'));
+            return Center(child: Text(context.loc.noCurrencyData(0)));
           },
         ),
       ),
@@ -175,8 +175,8 @@ class CurrencyListPage extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         state.status == CurrencyListStatus.networkError
-                            ? 'Оффлайн режим'
-                            : 'Кэшированные данные',
+                            ? context.loc.offlineMode
+                            : context.loc.cachedData,
                         style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
                       ),
                       const SizedBox(width: 12), // Отступ между частями
@@ -188,7 +188,7 @@ class CurrencyListPage extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      'Обновлено: ${DateFormat(_CurrencyListConstants.timeFormat, _CurrencyListConstants.ruLocale).format(state.lastUpdateTime!)}',
+                      '${context.loc.updated}: ${DateFormat(_CurrencyListConstants.timeFormat, _CurrencyListConstants.ruLocale).format(state.lastUpdateTime!)}',
                         style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
 
                     ),
@@ -211,7 +211,7 @@ class CurrencyListPage extends StatelessWidget {
                 if (data.isEmpty) {
                   return Center(
                     child: Text(
-                      'Ничего не найдено',
+                      context.loc.noData,
                       style: TextStyle(color: colors.grey),
                     ),
                   );

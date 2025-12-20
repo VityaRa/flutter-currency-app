@@ -40,7 +40,7 @@ class NewsListPage extends StatelessWidget {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Новости'),
+          title: Text(context.loc.news),
           automaticallyImplyLeading: false,
           surfaceTintColor: colors.appBarSurfaceTint,
         ),
@@ -56,14 +56,14 @@ class NewsListPage extends StatelessWidget {
             if (state.status == NewsListStatus.networkError) {
               return ErrorView(
                 message: state.errorMessage ??
-                    'Нет подключения к интернету. Проверьте настройки сети.',
+                     context.loc.checkNetwork,
                 onRetry: () => _loadNews(context),
               );
             }
 
             if (state.status == NewsListStatus.failure) {
               return ErrorView(
-                message: state.errorMessage ?? 'Не удалось загрузить новости.',
+                message: state.errorMessage ?? context.loc.cannotLoadNews,
                 onRetry: () => _loadNews(context),
               );
             }
@@ -83,7 +83,7 @@ class NewsListPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Нет новостей',
+                      context.loc.noNews,
                       style: TextStyle(
                         fontSize: 16,
                         color: colors.grey,
@@ -93,7 +93,7 @@ class NewsListPage extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () => _loadNews(context),
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Повторить'),
+                      label: Text(context.loc.repeat),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colors.primary,
                         foregroundColor: colors.white,
@@ -104,7 +104,7 @@ class NewsListPage extends StatelessWidget {
               );
             }
 
-            return const Center(child: Text('Нет данных'));
+            return Center(child: Text(context.loc.noData));
           },
         ),
       ),
@@ -142,8 +142,8 @@ class NewsListPage extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         state.status == NewsListStatus.networkError
-                            ? 'Оффлайн режим'
-                            : 'Кэшированные данные',
+                            ? context.loc.offlineMode 
+                            : context.loc.cachedData,
                         style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
 
                       ),
@@ -156,7 +156,7 @@ class NewsListPage extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      'Обновлено: ${DateFormat(_NewsListConstants.timeFormat, _NewsListConstants.ruLocale).format(state.lastUpdateTime!)}',
+                      '${context.loc.updated}: ${DateFormat(_NewsListConstants.timeFormat, _NewsListConstants.ruLocale).format(state.lastUpdateTime!)}',
                         style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
 
                     ),
@@ -185,7 +185,7 @@ class NewsListPage extends StatelessWidget {
     if (newsList.isEmpty) {
       return Center(
         child: Text(
-          'Новостей нет',
+          context.loc.noNews,
           style: fonts.regular12,
         ),
       );
@@ -205,15 +205,5 @@ class NewsListPage extends StatelessWidget {
       },
       padding: const EdgeInsets.fromLTRB(22, 16, 22, 40),
     );
-  }
-
-  String _formatTime(DateTime time) {
-    final now = DateTime.now();
-    final difference = now.difference(time);
-
-    if (difference.inMinutes < 1) return 'только что';
-    if (difference.inMinutes < 60) return '${difference.inMinutes} мин назад';
-    if (difference.inHours < 24) return '${difference.inHours} ч назад';
-    return '${difference.inDays} дн назад';
   }
 }

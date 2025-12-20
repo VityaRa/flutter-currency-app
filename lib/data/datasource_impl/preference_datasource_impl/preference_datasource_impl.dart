@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lr4/data/datasource_impl/preference_datasource_impl/mapper/app_theme_mode_mapper.dart';
 import 'package:lr4/data/datasource_impl/preference_datasource_impl/mapper/selected_datasource_mode_mapper.dart';
@@ -12,6 +14,7 @@ abstract class _Keys {
   static const String theme = 'theme_key';
   static const String token = 'token_key';
   static const String dataSource = 'datasource_key';
+  static const String locale = 'locale_key';
 }
 
 class PreferenceDatasourceImpl implements PreferenceDatasource {
@@ -28,25 +31,50 @@ class PreferenceDatasourceImpl implements PreferenceDatasource {
   }
 
   @override
-  void setThemeMode(AppThemeMode mode) => _sharedPreferences.setString(_Keys.theme, mode.name);
+  void setThemeMode(AppThemeMode mode) =>
+      _sharedPreferences.setString(_Keys.theme, mode.name);
+
+  @override
+  Locale get locale {
+    final String? localeString = _sharedPreferences.getString(_Keys.locale);
+
+    if (localeString == null) {
+      return const Locale('ru', 'RU');
+    }
+    
+    final parts = localeString.split('_');
+
+    if (parts.length >= 2) {
+      return Locale(parts[0], parts[1]);
+    } else if (parts.length == 1) {
+      return Locale(parts[0]);
+    }
+
+    return const Locale('ru', 'RU');
+  }
+
+  @override
+  void setLocale(Locale locale) {
+    final localeString = '${locale.languageCode}_${locale.countryCode ?? ""}';
+    _sharedPreferences.setString(_Keys.locale, localeString);
+  }
 
   @override
   Future<String?> getToken() => _secureStorage.read(key: _Keys.theme);
 
   @override
-  Future<void> setToken(String? token) => _secureStorage.write(key: _Keys.token, value: token);
+  Future<void> setToken(String? token) =>
+      _secureStorage.write(key: _Keys.token, value: token);
 
   @override
   DataSource get selectedDatasource {
-    final String? selectedDatasource = _sharedPreferences.getString(_Keys.dataSource);
-    print('selectedDatasource, $selectedDatasource');
+    final String? selectedDatasource =
+        _sharedPreferences.getString(_Keys.dataSource);
     return DataSourceDao.fromString(selectedDatasource).model;
   }
 
   @override
   Future<void> setSelectedDataSource(DataSource datasource) {
-    print("setSelectedDataSource $datasource");
-    print(selectedDatasource);
     return _sharedPreferences.setString(_Keys.dataSource, datasource.name);
   }
 }

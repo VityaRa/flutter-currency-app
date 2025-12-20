@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () => context.read<SettingsRepository>().setToken(_generateRandomToken()),
           child: Text(
-            'Войти',
+            context.loc.login,
             style: context.fonts.regular14,
           ),
         ),

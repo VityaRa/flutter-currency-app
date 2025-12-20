@@ -1,9 +1,6 @@
-// app/settings_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:lr4/app/app_routes.dart';
-
-
+import 'package:lr4/app/utils/context_ext.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -15,7 +12,7 @@ class SettingsPage extends StatelessWidget {
       context,
       AppRoutes.resultScreen,
       arguments: {
-        'data': 'Текст с экрана settings_page.dart',
+        'data': context.loc.navigateWithData,
         'number': 42,
       },
     );
@@ -25,17 +22,17 @@ class SettingsPage extends StatelessWidget {
       // 3. Отображаем полученный результат в SnackBar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('✅ Результат получен: $result'),
+          content: Text(context.loc.resultReceived(result)),
           duration: const Duration(seconds: 4),
           backgroundColor: Theme.of(context).primaryColor,
         ),
       );
     } else if (result == null) {
-       // Если пользователь просто нажал кнопку "Назад" на ResultScreen
-       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('⚠️ Результат не был выбран.'),
-          duration: Duration(seconds: 2),
+      // Если пользователь просто нажал кнопку "Назад" на ResultScreen
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.loc.noResult),
+          duration: const Duration(seconds: 2),
         ),
       );
     }
@@ -47,16 +44,16 @@ class SettingsPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Модальное окно'),
-          content: const Text('Хотите подтвердить операцию?'),
+          title: Text(context.loc.dialogTitle),
+          content: Text(context.loc.dialogContent),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Отменено'),
-              child: const Text('Отмена'),
+              onPressed: () => Navigator.pop(context, context.loc.operationCancelled),
+              child: Text(context.loc.cancelButton),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Подтверждено'),
-              child: const Text('Подтвердить'),
+              onPressed: () => Navigator.pop(context, context.loc.operationConfirmed),
+              child: Text(context.loc.confirmButton),
             ),
           ],
         );
@@ -65,7 +62,7 @@ class SettingsPage extends StatelessWidget {
 
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Результат Dialog: $result')),
+        SnackBar(content: Text(context.loc.resultDialog(result))),
       );
     }
   }
@@ -82,11 +79,11 @@ class SettingsPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Text('Выберите опцию'),
+                Text(context.loc.bottomSheetTitle),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context, 'Опция A выбрана'),
-                  child: const Text('Опция A'),
+                  onPressed: () => Navigator.pop(context, context.loc.optionASelected),
+                  child: Text(context.loc.optionA),
                 )
               ],
             ),
@@ -97,7 +94,7 @@ class SettingsPage extends StatelessWidget {
 
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Результат BottomSheet: $result')),
+        SnackBar(content: Text(context.loc.resultBottomSheet(result))),
       );
     }
   }
@@ -109,14 +106,15 @@ class SettingsPage extends StatelessWidget {
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-      helpText: 'Выберите дату',
-      cancelText: 'Отменить',
-      confirmText: 'Готово',
+      helpText: context.loc.chooseDate,
+      cancelText: context.loc.cancelButton,
+      confirmText: context.loc.confirmButton,
     );
 
     if (picked != null) {
+      final date = '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Выбрана дата: ${picked.year}-${picked.month}-${picked.day}')),
+        SnackBar(content: Text(context.loc.dateSelected(date))),
       );
     }
   }
@@ -126,25 +124,24 @@ class SettingsPage extends StatelessWidget {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
-      helpText: 'Выберите время',
+      helpText: context.loc.chooseTime,
     );
 
     if (picked != null) {
+      final time = '${picked.hour}:${picked.minute.toString().padLeft(2, '0')}';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Выбрано время: ${picked.hour}:${picked.minute}')),
+        SnackBar(content: Text(context.loc.timeSelected(time))),
       );
     }
   }
 
-
-
-@override
+  @override
   Widget build(BuildContext context) {
     final canPop = Navigator.of(context).canPop(); // Проверяем canPop
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Настройки'),
+        title: Text(context.loc.settings),
       ),
       body: SingleChildScrollView( // Оборачиваем в SingleChildScrollView для безопасности
         padding: const EdgeInsets.all(20.0),
@@ -152,20 +149,20 @@ class SettingsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // --- ДЕМОНСТРАЦИЯ ПЕРЕДАЧИ ДАННЫХ В ОБЕ СТОРОНЫ ---
-            const Text(
-              '1. Передача данных в обоих направлениях:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text(
+              context.loc.dataTransferDemo,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => _navigateAndHandleResult(context),
-              child: const Text('Перейти на result_screen и передать данные'),
+              child: Text(context.loc.navigateWithData),
             ),
             const Divider(height: 40),
 
-            const Text(
-              '2. Расширенные методы Navigator:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text(
+              context.loc.advancedNavigatorMethods,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
             
@@ -179,7 +176,7 @@ class SettingsPage extends StatelessWidget {
                   (route) => false, // Условие: удаляем все маршруты
                 );
               },
-              child: const Text('pushNamedAndRemoveUntil (На Главный Экран)'),
+              child: Text(context.loc.pushNamedAndRemoveUntil),
             ),
             const SizedBox(height: 10),
 
@@ -193,7 +190,7 @@ class SettingsPage extends StatelessWidget {
                       ModalRoute.withName(AppRoutes.home),
                     );
                   } : null, // Отключаем кнопку, если нельзя pop
-              child: const Text('popUntil (До Главного Экрана)'),
+              child: Text(context.loc.popUntil),
             ),
             const SizedBox(height: 10),
 
@@ -204,45 +201,47 @@ class SettingsPage extends StatelessWidget {
                       // Пробуем закрыть экран, выводим результат
                       final didPop = await Navigator.maybePop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('maybePop сработало: $didPop')),
+                        SnackBar(
+                          content: Text(context.loc.maybePop(canPop.toString())),
+                        ),
                       );
                     } : null, // Отключаем кнопку, если нельзя pop
-              child: Text('maybePop (Можно закрыть: $canPop)'),
+              child: Text(context.loc.maybePop(canPop.toString())),
             ),
             const Divider(height: 40),
 
             // --- ДЕМОНСТРАЦИЯ МОДАЛЬНЫХ ЭЛЕМЕНТОВ ---
-            const Text(
-              '3. Модальные элементы и обработка результатов:',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text(
+              context.loc.modalElementsDemo,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 10),
 
             // Вызов showDialog
             ElevatedButton(
               onPressed: () => _showCustomDialog(context),
-              child: const Text('Dialog'),
+              child: Text(context.loc.dialogTitle),
             ),
             const SizedBox(height: 10),
 
             // Вызов showModalBottomSheet
             ElevatedButton(
               onPressed: () => _showCustomBottomSheet(context),
-              child: const Text('Modal Bottom Sheet'),
+              child: Text(context.loc.modalBottomSheet),
             ),
             const SizedBox(height: 10),
 
             // Вызов showDatePicker
             ElevatedButton(
               onPressed: () => _showCustomDatePicker(context),
-              child: const Text('Date Picker'),
+              child: Text(context.loc.chooseDate),
             ),
             const SizedBox(height: 10),
 
             // Вызов showTimePicker
             ElevatedButton(
               onPressed: () => _showCustomTimePicker(context),
-              child: const Text('Time Picker'),
+              child: Text(context.loc.chooseTime),
             ),
           ],
         ),

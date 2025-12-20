@@ -50,21 +50,21 @@ class HomePage extends StatelessWidget {
                     homeContext.read<HomeCubit>().selectTab(index);
                   }
                 },
-                items: const [ // Добавляем const для оптимизации
+                items: [ // Добавляем const для оптимизации
                   BottomNavigationBarItem(
                     icon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: false),
                     activeIcon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: true),
-                    label: 'Курс Валют',
+                    label: context.loc.currencyRate,
                   ),
                   BottomNavigationBarItem(
                     icon: TabWidget(assetPath: 'assets/icons/news.png', isSelected: false),
                     activeIcon: TabWidget(assetPath: 'assets/icons/news.png', isSelected: true),
-                    label: 'Новости',
+                    label: context.loc.news,
                   ),
                   BottomNavigationBarItem(
                     icon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: false),
                     activeIcon: TabWidget(assetPath: 'assets/icons/home.png', isSelected: true),
-                    label: 'Профиль',
+                    label: context.loc.profile,
                   ),
                 ],
                 // Fix для TabWidget, так как теперь он должен сам определять состояние

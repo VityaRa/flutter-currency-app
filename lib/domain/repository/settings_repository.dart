@@ -1,4 +1,6 @@
 // import 'package:lr4/app/profile/profile_page.dart';
+import 'dart:ui';
+
 import 'package:lr4/domain/model/app_theme_mode.dart';
 import 'package:lr4/domain/model/data_source.dart';
 
@@ -16,6 +18,11 @@ abstract interface class SettingsRepository {
   abstract final AppThemeMode themeMode;
   void setThemeMode(AppThemeMode mode);
 
+  // Локаль
+  abstract final Stream<Locale> localeStream;
+  abstract final Locale locale;
+  void setLocale(Locale locale);
+
   // Источник данных
   abstract final Stream<DataSource> dataSourceStream;
   abstract final DataSource dataSource;
@@ -25,5 +32,6 @@ abstract interface class SettingsRepository {
   Future<void> clearAllCache();
   // Future<void> clearNewsCache();
   // Future<void> clearCurrencyCache();
+
 
 }

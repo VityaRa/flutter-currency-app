@@ -27,13 +27,15 @@ dependencies:
   http: ^1.2.0 # Для сетевых запросов
   rss_dart: ^1.0.13 # Для чтения новостей RSS
   json_annotation: ^4.9.0 # Для работы с JSON
-  intl: ^0.19.0 # Для форматирования дат
+  intl: ^0.20.2 # Для форматирования дат
   xml: ^6.5.0                # Для парсинга XML от ЦБ РФ
   connectivity_plus: ^6.0.4  # Для проверки подключения к интернету
   logger: ^2.6.2
   logging: ^1.3.0
   drift: ^2.30.0
   restart_app: ^1.1.0
+  flutter_localizations:
+    sdk: flutter
 
 
 dev_dependencies:
@@ -48,7 +50,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
+  generate: true
   fonts:
     - family: Inter
       fonts:
@@ -65,3 +67,6 @@ flutter_native_splash:
   android_gravity: center
   ios_content_mode: center
   # web_image: assets/icons/logo.png
+
+flutter_localizations:
+  sdk: flutter

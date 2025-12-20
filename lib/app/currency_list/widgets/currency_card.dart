@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lr4/app/currency_detail/currency_detail_page.dart';
 import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/custom_plural_resolver.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/domain/model/currency_model.dart'; //
 
@@ -40,7 +41,6 @@ class CurrencyCard extends StatelessWidget {
     final arrowAsset = priceChange == PriceChange.up
         ? 'assets/icons/arrow_up.png'
         : 'assets/icons/arrow_down.png';
-
 
     return GestureDetector(
       onTap: () {
@@ -113,7 +113,7 @@ class CurrencyCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${model.nominal} шт.',
+                        CustomPluralResolver.getPluralString(Localizations.localeOf(context), context.loc.asNominalTemplate(model.nominal), model.nominal),
                         style: fonts.regular12.copyWith(fontSize: 11, color: colors.grey),
                       ),
                     ],

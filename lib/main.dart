@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:logging/logging.dart';
+import 'package:lr4/app/gen/l10n/app_localizations.dart';
 import 'package:lr4/app/profile/profile_page.dart';
+import 'package:lr4/app/utils/context_ext.dart';
 import 'package:lr4/app/utils/datasource_factory.dart';
 import 'package:lr4/data/datasource_impl/preference_datasource_impl/preference_datasource_impl.dart'; 
 import 'package:lr4/data/repository_impl/settings_repository_impl.dart';
@@ -73,9 +75,9 @@ void main() async {
   runApp(GlobalProviders(
     restDatasource: restDatasource,
     networkService: networkService,
-    dbDatasource: dbDatasource!,
+    dbDatasource: dbDatasource,
     preferenceDatasource: preferenceDatasource,
-    settingsRepository: settingsRepository, // Добавляем SettingsRepository
+    settingsRepository: settingsRepository,
     child: const App(),
   ));
 }
@@ -83,9 +85,9 @@ void main() async {
 class GlobalProviders extends StatefulWidget {
   final RestDatasourceImpl restDatasource;
   final NetworkService networkService;
-  final DbDatasource dbDatasource; // Теперь может быть null
+  final DbDatasource dbDatasource;
   final PreferenceDatasourceImpl preferenceDatasource;
-  final SettingsRepository settingsRepository; // Добавляем
+  final SettingsRepository settingsRepository;
   final Widget child;
 
   const GlobalProviders({
@@ -175,8 +177,10 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   SettingsRepository get _settingsRepository => context.read<SettingsRepository>();
+  late Locale _currentLocale;
 
   Future<void> _initData() async {
+     _currentLocale = _settingsRepository.locale;
     await Future.delayed(const Duration(seconds: 1));
     await _settingsRepository.initAsyncData();
   }
@@ -185,6 +189,12 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     _initData();
+
+    _settingsRepository.localeStream.listen((locale) {
+      setState(() {
+        _currentLocale = locale;
+      });
+    });
   }
 
   @override
@@ -199,6 +209,9 @@ class _AppState extends State<App> {
           theme: ThemeData.light().appThemeData,
           darkTheme: ThemeData.dark().appThemeData,
           themeMode: appThemeMode.themeMode,
+          locale: _currentLocale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: StreamBuilder(
             stream: _settingsRepository.isAuthStream,
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -250,12 +263,12 @@ class _AppState extends State<App> {
               // Пытаемся извлечь аргументы как Map
               final args = settings.arguments;
               
-              String title = 'Детали';
+              String title = context.loc.details;
               String currencyId = '';
 
               // Если аргументы переданы как Map
               if (args is Map<String, dynamic>) {
-                 title = args['title'] as String? ?? 'Детали';
+                 title = args['title'] as String? ?? context.loc.details;
                  currencyId = args['currencyId'] as String? ?? '';
               } 
               // Если аргументы переданы просто как строка

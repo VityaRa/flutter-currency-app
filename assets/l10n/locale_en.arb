@@ -1,0 +1,177 @@
+{  
+  "login": "Login",
+  "logout": "Logout",
+  "currencyRate": "Currency Rates",
+  "news": "News",
+  "profile": "Profile",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "system": "System",
+  "search": "Search",
+  "asNominalTemplate": "{value, plural, =0{0 pieces}=1{1 piece}other{# pieces}}",
+  "@asNominalTemplate": {
+    "description": "Plural template for item quantity"
+  },
+  "asNominal": "{value, plural, =0{0 pieces}=1{1 piece}other{# pieces}}",
+  "@asNominal": {
+    "description": "Plural form for item quantity",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "checkNetwork": "No internet connection. Check network settings.",
+  "cannotLoadCurrencies": "Failed to load currency rates.",
+  "cannotLoadNews": "Failed to load news.",
+  "repeat": "Retry",
+  "noNews": "No news",
+  "noData": "No data",
+  "noCurrencyData": "{count, plural, =0{No currency data}=1{No currency data}other{No currency data}}",
+  "@noCurrencyData": {
+    "description": "Plural form for no currency data message",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "offlineMode": "Offline mode",
+  "cachedData": "Cached data",
+  "updated": "Updated",
+  "clearCache": "Clear cache",
+  "cacheCleared": "Cache cleared successfully",
+  "removeAllSavedData": "Remove all saved data",
+  "cacheClearError": "Error clearing cache",
+  "confirmClearCache": "Are you sure you want to clear all saved data? The data will be reloaded on the next app launch.",
+  "cancel": "Cancel",
+  "clear": "Clear",
+  "restartApp": "App restart",
+  "chosedDataSource": "You have selected data source",
+  "restartForApply": "To apply the changes, the application needs to be restarted.",
+  "restart": "Restart",
+  "dataSource": "Data source",
+  "applyNewDatasource": "Applying new data source",
+  "localStorageInfo": "Uses {datasource} for local data storage",
+  "@localStorageInfo": {
+    "description": "Information about local data storage source",
+    "placeholders": {
+      "datasource": {
+        "type": "String",
+        "example": "SharedPreferences"
+      }
+    }
+  },
+  "dataWillLoadedViaNetwork": "Data will be loaded from the network or from local SQLite storage",
+  "returnDataScreen": "Return Result Screen",
+  "passedArguments": "Arguments passed: \"{text}\" and number {number}",
+  "@passedArguments": {
+    "description": "Text displaying passed arguments",
+    "placeholders": {
+      "text": {
+        "type": "String",
+        "example": "Example text"
+      },
+      "number": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+  "clickToReturn": "Click \"Return Data\" to close this screen and send the current date and time.",
+  "returnDataButton": "Return Data",
+  "confirmationMessage": "Operation confirmed: {datetime}",
+  "@confirmationMessage": {
+    "description": "Confirmation message with date and time",
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "2024-01-15 14:30:45"
+      }
+    }
+  },
+  "noGivenData": "No data passed",
+  "settings": "Settings",
+  "dataTransferDemo": "Data transfer in both directions:",
+  "navigateWithData": "Go to result_screen and pass data",
+  "advancedNavigatorMethods": "Advanced Navigator methods:",
+  "pushNamedAndRemoveUntil": "pushNamedAndRemoveUntil (To Home Screen)",
+  "popUntil": "popUntil (To Home Screen)",
+  "maybePop": "maybePop (Can close: {canPop})",
+  "@maybePop": {
+    "description": "Maybe pop button text",
+    "placeholders": {
+      "canPop": {
+        "type": "String",
+        "example": "true"
+      }
+    }
+  },
+  "modalElementsDemo": "Modal elements and result handling:",
+  "dialogTitle": "Modal window",
+  "dialogContent": "Do you want to confirm the operation?",
+  "cancelButton": "Cancel",
+  "confirmButton": "Confirm",
+  "bottomSheetTitle": "Select an option",
+  "optionA": "Option A",
+  "optionASelected": "Option A selected",
+  "chooseDate": "Select date",
+  "chooseTime": "Select time",
+  "dateSelected": "Date selected: {date}",
+  "@dateSelected": {
+    "description": "Date selection confirmation",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-01-15"
+      }
+    }
+  },
+  "timeSelected": "Time selected: {time}",
+  "@timeSelected": {
+    "description": "Time selection confirmation",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "14:30"
+      }
+    }
+  },
+  "operationCancelled": "Cancelled",
+  "operationConfirmed": "Confirmed",
+  "resultReceived": "✅ Result received: {result}",
+  "@resultReceived": {
+    "description": "Result received confirmation",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Operation confirmed: 2024-01-15 14:30:45"
+      }
+    }
+  },
+  "noResult": "⚠️ No result was selected.",
+  "resultDialog": "Dialog result: {result}",
+  "@resultDialog": {
+    "description": "Dialog result message",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Confirmed"
+      }
+    }
+  },
+  "resultBottomSheet": "BottomSheet result: {result}",
+  "@resultBottomSheet": {
+    "description": "Bottom sheet result message",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Option A selected"
+      }
+    }
+  },
+  "modalBottomSheet": "Modal Bottom Sheet",
+  "details": "Details",
+  "language": "Language",
+  "languageRussian": "Russian",
+  "languageEnglish": "English",
+  "languageSpanish": "Spanish",
+  "changedTo": "changed to"
+}

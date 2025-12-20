@@ -26,7 +26,7 @@ class SearchView extends StatelessWidget {
             child: Image.asset('assets/icons/search.png'),
           ),
         ),
-        hintText: 'Поиск',
+        hintText: context.loc.search,
         hintStyle: fonts.regular12.copyWith(color: colors.stormyGrey),
         border: border,
         enabledBorder: border,

@@ -48,7 +48,7 @@ class CurrencyDetailPage extends StatelessWidget {
                     Text(state.message),
                     ElevatedButton(
                       onPressed: () => context.read<CurrencyDetailCubit>().loadHistory(),
-                      child: const Text('Повторить'),
+                      child: Text(context.loc.repeat),
                     )
                   ],
                 ),

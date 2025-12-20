@@ -1,0 +1,415 @@
+{
+  "login": "Iniciar sesión",
+  "@login": {
+    "description": "Botón de inicio de sesión"
+  },
+  
+  "logout": "Cerrar sesión",
+  "@logout": {
+    "description": "Botón de cierre de sesión"
+  },
+  
+  "currencyRate": "Tasas de cambio",
+  "@currencyRate": {
+    "description": "Título de la sección de tasas de cambio"
+  },
+  
+  "news": "Noticias",
+  "@news": {
+    "description": "Título de la sección de noticias"
+  },
+  
+  "profile": "Perfil",
+  "@profile": {
+    "description": "Título de la sección de perfil de usuario"
+  },
+  
+  "theme": "Tema",
+  "@theme": {
+    "description": "Título de la configuración de tema"
+  },
+  
+  "light": "Claro",
+  "@light": {
+    "description": "Tema claro"
+  },
+  
+  "dark": "Oscuro",
+  "@dark": {
+    "description": "Tema oscuro"
+  },
+  
+  "system": "Sistema",
+  "@system": {
+    "description": "Tema del sistema"
+  },
+  
+  "search": "Buscar",
+  "@search": {
+    "description": "Campo de búsqueda"
+  },
+  
+  "asNominalTemplate": "{value, plural, =0{0 piezas}=1{1 pieza}other{# piezas}}",
+  "@asNominalTemplate": {
+    "description": "Plantilla plural para cantidad de artículos"
+  },
+  "asNominal": "{value, plural, =0{0 piezas}=1{1 pieza}other{# piezas}}",
+  "@asNominal": {
+    "description": "Forma plural para cantidad de artículos",
+    "placeholders": {
+      "value": {}
+    }
+  },
+  
+  "checkNetwork": "No hay conexión a Internet. Verifique la configuración de red.",
+  "@checkNetwork": {
+    "description": "Mensaje de error de conexión a Internet"
+  },
+  
+  "cannotLoadCurrencies": "No se pudieron cargar las tasas de cambio.",
+  "@cannotLoadCurrencies": {
+    "description": "Mensaje de error al cargar tasas de cambio"
+  },
+  
+  "cannotLoadNews": "No se pudieron cargar las noticias.",
+  "@cannotLoadNews": {
+    "description": "Mensaje de error al cargar noticias"
+  },
+  
+  "repeat": "Reintentar",
+  "@repeat": {
+    "description": "Botón para reintentar"
+  },
+  
+  "noNews": "No hay noticias",
+  "@noNews": {
+    "description": "Mensaje cuando no hay noticias"
+  },
+  
+  "noData": "No hay datos",
+  "@noData": {
+    "description": "Mensaje cuando no hay datos"
+  },
+  
+  "noCurrencyData": "{count, plural, =0{No hay datos sobre divisas}=1{No hay datos sobre la divisa}other{No hay datos sobre divisas}}",
+  "@noCurrencyData": {
+    "description": "Forma plural para mensaje sin datos de divisas",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  
+  "offlineMode": "Modo sin conexión",
+  "@offlineMode": {
+    "description": "Indicador de modo sin conexión"
+  },
+  
+  "cachedData": "Datos en caché",
+  "@cachedData": {
+    "description": "Indicador de datos almacenados en caché"
+  },
+  
+  "updated": "Actualizado",
+  "@updated": {
+    "description": "Indicador de fecha de actualización"
+  },
+  
+  "clearCache": "Limpiar caché",
+  "@clearCache": {
+    "description": "Acción para limpiar caché"
+  },
+  
+  "cacheCleared": "Caché limpiado exitosamente",
+  "@cacheCleared": {
+    "description": "Mensaje de éxito al limpiar caché"
+  },
+  
+  "removeAllSavedData": "Eliminar todos los datos guardados",
+  "@removeAllSavedData": {
+    "description": "Acción para eliminar todos los datos"
+  },
+  
+  "cacheClearError": "Error al limpiar el caché",
+  "@cacheClearError": {
+    "description": "Mensaje de error al limpiar caché"
+  },
+  
+  "confirmClearCache": "¿Está seguro de que desea eliminar todos los datos guardados? Los datos se volverán a cargar en el próximo inicio de la aplicación.",
+  "@confirmClearCache": {
+    "description": "Mensaje de confirmación para limpiar caché"
+  },
+  
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Botón de cancelar"
+  },
+  
+  "clear": "Limpiar",
+  "@clear": {
+    "description": "Botón de limpiar"
+  },
+  
+  "restartApp": "Reiniciar aplicación",
+  "@restartApp": {
+    "description": "Acción para reiniciar la aplicación"
+  },
+  
+  "chosedDataSource": "Ha seleccionado la fuente de datos",
+  "@chosedDataSource": {
+    "description": "Mensaje de selección de fuente de datos"
+  },
+  
+  "restartForApply": "Para aplicar los cambios, es necesario reiniciar la aplicación.",
+  "@restartForApply": {
+    "description": "Mensaje que indica necesidad de reiniciar"
+  },
+  
+  "restart": "Reiniciar",
+  "@restart": {
+    "description": "Botón de reiniciar"
+  },
+  
+  "dataSource": "Fuente de datos",
+  "@dataSource": {
+    "description": "Título de configuración de fuente de datos"
+  },
+  
+  "applyNewDatasource": "Aplicando nueva fuente de datos",
+  "@applyNewDatasource": {
+    "description": "Mensaje de aplicación de nueva fuente de datos"
+  },
+  
+  "localStorageInfo": "Se utiliza {datasource} para almacenamiento local de datos",
+  "@localStorageInfo": {
+    "description": "Información sobre la fuente de almacenamiento local de datos",
+    "placeholders": {
+      "datasource": {
+        "type": "String",
+        "example": "SharedPreferences"
+      }
+    }
+  },
+  
+  "dataWillLoadedViaNetwork": "Los datos se cargarán desde la red o desde el almacenamiento local SQLite",
+  "@dataWillLoadedViaNetwork": {
+    "description": "Descripción de cómo se cargarán los datos"
+  },
+  
+  "returnDataScreen": "Pantalla para devolver resultado",
+  "@returnDataScreen": {
+    "description": "Título de pantalla de retorno de datos"
+  },
+  
+  "passedArguments": "Argumentos pasados: \"{text}\" y número {number}",
+  "@passedArguments": {
+    "description": "Texto que muestra argumentos pasados",
+    "placeholders": {
+      "text": {
+        "type": "String",
+        "example": "Texto de ejemplo"
+      },
+      "number": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+  
+  "clickToReturn": "Haga clic en \"Devolver datos\" para cerrar esta pantalla y enviar la fecha y hora actuales.",
+  "@clickToReturn": {
+    "description": "Instrucciones para devolver datos"
+  },
+  
+  "returnDataButton": "Devolver datos",
+  "@returnDataButton": {
+    "description": "Botón para devolver datos"
+  },
+  
+  "confirmationMessage": "Operación confirmada: {datetime}",
+  "@confirmationMessage": {
+    "description": "Mensaje de confirmación con fecha y hora",
+    "placeholders": {
+      "datetime": {
+        "type": "String",
+        "example": "2024-01-15 14:30:45"
+      }
+    }
+  },
+  
+  "noGivenData": "No hay datos pasados",
+  "@noGivenData": {
+    "description": "Mensaje cuando no se pasaron datos"
+  },
+  
+  "settings": "Configuración",
+  "@settings": {
+    "description": "Título de pantalla de configuración"
+  },
+  
+  "dataTransferDemo": "Transferencia de datos en ambas direcciones:",
+  "@dataTransferDemo": {
+    "description": "Título de demostración de transferencia de datos"
+  },
+  
+  "navigateWithData": "Ir a result_screen y pasar datos",
+  "@navigateWithData": {
+    "description": "Acción para navegar y pasar datos"
+  },
+  
+  "advancedNavigatorMethods": "Métodos avanzados de Navigator:",
+  "@advancedNavigatorMethods": {
+    "description": "Título de métodos avanzados de navegación"
+  },
+  
+  "pushNamedAndRemoveUntil": "pushNamedAndRemoveUntil (A Pantalla Principal)",
+  "@pushNamedAndRemoveUntil": {
+    "description": "Acción de navegación pushNamedAndRemoveUntil"
+  },
+  
+  "popUntil": "popUntil (Hasta Pantalla Principal)",
+  "@popUntil": {
+    "description": "Acción de navegación popUntil"
+  },
+  
+  "maybePop": "maybePop (Se puede cerrar: {canPop})",
+  "@maybePop": {
+    "description": "Texto del botón maybePop",
+    "placeholders": {
+      "canPop": {
+        "type": "String",
+        "example": "true"
+      }
+    }
+  },
+  
+  "modalElementsDemo": "Elementos modales y manejo de resultados:",
+  "@modalElementsDemo": {
+    "description": "Título de demostración de elementos modales"
+  },
+  
+  "dialogTitle": "Ventana modal",
+  "@dialogTitle": {
+    "description": "Título de diálogo modal"
+  },
+  
+  "dialogContent": "¿Desea confirmar la operación?",
+  "@dialogContent": {
+    "description": "Contenido del diálogo de confirmación"
+  },
+  
+  "cancelButton": "Cancelar",
+  "@cancelButton": {
+    "description": "Botón de cancelar en diálogo"
+  },
+  
+  "confirmButton": "Confirmar",
+  "@confirmButton": {
+    "description": "Botón de confirmar en diálogo"
+  },
+  
+  "bottomSheetTitle": "Seleccione una opción",
+  "@bottomSheetTitle": {
+    "description": "Título de bottom sheet"
+  },
+  
+  "optionA": "Opción A",
+  "@optionA": {
+    "description": "Opción A en menú"
+  },
+  
+  "optionASelected": "Opción A seleccionada",
+  "@optionASelected": {
+    "description": "Mensaje de opción A seleccionada"
+  },
+  
+  "chooseDate": "Seleccionar fecha",
+  "@chooseDate": {
+    "description": "Acción para seleccionar fecha"
+  },
+  
+  "chooseTime": "Seleccionar hora",
+  "@chooseTime": {
+    "description": "Acción para seleccionar hora"
+  },
+  
+  "dateSelected": "Fecha seleccionada: {date}",
+  "@dateSelected": {
+    "description": "Confirmación de selección de fecha",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024-01-15"
+      }
+    }
+  },
+  
+  "timeSelected": "Hora seleccionada: {time}",
+  "@timeSelected": {
+    "description": "Confirmación de selección de hora",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "14:30"
+      }
+    }
+  },
+  
+  "operationCancelled": "Cancelado",
+  "@operationCancelled": {
+    "description": "Estado de operación cancelada"
+  },
+  
+  "operationConfirmed": "Confirmado",
+  "@operationConfirmed": {
+    "description": "Estado de operación confirmada"
+  },
+  
+  "resultReceived": "✅ Resultado recibido: {result}",
+  "@resultReceived": {
+    "description": "Confirmación de resultado recibido",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Operación confirmada: 2024-01-15 14:30:45"
+      }
+    }
+  },
+  
+  "noResult": "⚠️ No se seleccionó ningún resultado.",
+  "@noResult": {
+    "description": "Mensaje cuando no se seleccionó resultado"
+  },
+  
+  "resultDialog": "Resultado del diálogo: {result}",
+  "@resultDialog": {
+    "description": "Mensaje de resultado del diálogo",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Confirmado"
+      }
+    }
+  },
+  
+  "resultBottomSheet": "Resultado del BottomSheet: {result}",
+  "@resultBottomSheet": {
+    "description": "Mensaje de resultado del bottom sheet",
+    "placeholders": {
+      "result": {
+        "type": "String",
+        "example": "Opción A seleccionada"
+      }
+    }
+  },
+  
+  "modalBottomSheet": "Menú modal inferior",
+  "@modalBottomSheet": {
+    "description": "Título de menú modal inferior"
+  },
+  "details": "Detalles",
+  "language": "Idioma",
+  "languageRussian": "Ruso",
+  "languageEnglish": "Inglés",
+  "languageSpanish": "Español",
+  "changedTo": "cambiado a"
+}

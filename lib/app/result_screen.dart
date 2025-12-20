@@ -1,6 +1,5 @@
-// app/result_screen.dart
-
 import 'package:flutter/material.dart';
+import 'package:lr4/app/utils/context_ext.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({super.key});
@@ -14,14 +13,14 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Получение переданных аргуменов
+    // Получение переданных аргументов
     final Map<String, dynamic>? args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final String initialText = args?['data'] as String? ?? 'Нет переданных данных';
+    final String initialText = args?['data'] as String? ?? context.loc.noGivenData;
     final int initialNumber = args?['number'] as int? ?? 0;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Экран для возврата результата'),
+        title: Text(context.loc.returnDataScreen),
       ),
       body: Center(
         child: Padding(
@@ -31,27 +30,27 @@ class ResultScreen extends StatelessWidget {
             children: [
               // Отображение переданных данных
               Text(
-                'Переданы аргументы: "$initialText" и число $initialNumber',
+                context.loc.passedArguments(initialText, initialNumber),
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Нажмите "Вернуть данные", чтобы закрыть этот экран и отправить текущую дату и время.',
+              Text(
+                context.loc.clickToReturn,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: () {
                   final now = DateTime.now();
-                  final formattedResult = 'Операция подтверждена: ${_formatDateTime(now)}';
+                  final formattedResult = context.loc.confirmationMessage(_formatDateTime(now));
                   
                   // Возвращаем динамически сгенерированную строку
                   Navigator.pop(context, formattedResult);
                 },
                 icon: const Icon(Icons.send),
-                label: const Text('Вернуть данные'),
+                label: Text(context.loc.returnDataButton),
               ),
             ],
           ),

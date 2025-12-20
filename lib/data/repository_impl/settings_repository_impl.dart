@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/model/app_theme_mode.dart';
@@ -18,6 +19,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
       StreamController.broadcast();
   final StreamController<AppThemeMode> _themeModeController =
       StreamController.broadcast();
+  final StreamController<Locale> _localeController =
+      StreamController.broadcast();
   final StreamController<DataSource> _datasourceController =
       StreamController.broadcast();
 
@@ -30,6 +33,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     _isAuth = isAuth;
 
     _datasourceController.add(dataSource);
+    // _localeController.add(dataSource);
   }
 
   @override
@@ -47,8 +51,19 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   void setThemeMode(AppThemeMode mode) {
     _datasource.setThemeMode(mode);
-
     _themeModeController.add(mode);
+  }
+
+  @override
+  Stream<Locale> get localeStream => _localeController.stream;
+
+  @override
+  Locale get locale => _datasource.locale;
+
+  @override
+  void setLocale(Locale locale) {
+    _datasource.setLocale(locale);
+    _localeController.add(locale);
   }
 
   @override
@@ -72,7 +87,6 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<void> setDataSource(DataSource source) async {
-    print(source);
     await _datasource.setSelectedDataSource(source);
     _datasourceController.add(source);
   }
