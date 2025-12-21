@@ -160,16 +160,10 @@ abstract class AppLocalizations {
   /// **'Поиск'**
   String get search;
 
-  /// Plural template for item quantity
+  /// Количество штук
   ///
   /// In ru, this message translates to:
-  /// **'{value, plural, one{# штука} few{# штуки} many{# штук} other{# штук}}'**
-  String asNominalTemplate(num value);
-
-  /// Plural form for item quantity
-  ///
-  /// In ru, this message translates to:
-  /// **'{value, plural, =0{0 штук}=1{1 штука}=2{2 штуки}few{# штуки}many{# штук}other{# штук}}'**
+  /// **'{value, plural, =0{0 штук}=2{2 штуки}one{{value} штука}few{{value} штуки}many{{value} штук}other{{value} штук}}'**
   String asNominal(num value);
 
   /// No description provided for @checkNetwork.

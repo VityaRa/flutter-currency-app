@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lr4/app/currency_detail/currency_detail_page.dart';
 import 'package:lr4/app/utils/context_ext.dart';
-import 'package:lr4/app/utils/custom_plural_resolver.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
-import 'package:lr4/domain/model/currency_model.dart'; //
+import 'package:lr4/domain/model/currency_model.dart';
 
 // Вспомогательный enum для определения роста/падения
 enum PriceChange { up, down, stable }
@@ -106,14 +105,11 @@ class CurrencyCard extends StatelessWidget {
                         model.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                        ),
+                        style: fonts.semiBold12,
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        CustomPluralResolver.getPluralString(Localizations.localeOf(context), context.loc.asNominalTemplate(model.nominal), model.nominal),
+                        context.loc.asNominal(model.nominal),
                         style: fonts.regular12.copyWith(fontSize: 11, color: colors.grey),
                       ),
                     ],
@@ -126,10 +122,7 @@ class CurrencyCard extends StatelessWidget {
                 children: [
                   Text(
                     model.value.toStringAsFixed(2),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: rateColor,
-                    ),
+                    style: fonts.semiBold12.copyWith(color: rateColor, fontWeight: FontWeight.w700),
                   ),
                 ],
               ),

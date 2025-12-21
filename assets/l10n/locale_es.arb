@@ -1,4 +1,5 @@
 {
+  "@@locale": "es",
   "login": "Iniciar sesión",
   "@login": {
     "description": "Botón de inicio de sesión"
@@ -49,13 +50,9 @@
     "description": "Campo de búsqueda"
   },
   
-  "asNominalTemplate": "{value, plural, =0{0 piezas}=1{1 pieza}other{# piezas}}",
-  "@asNominalTemplate": {
-    "description": "Plantilla plural para cantidad de artículos"
-  },
-  "asNominal": "{value, plural, =0{0 piezas}=1{1 pieza}other{# piezas}}",
+  "asNominal": "{value, plural, =0{0 piezas}=1{1 pieza}other{{value} piezas}}",
   "@asNominal": {
-    "description": "Forma plural para cantidad de artículos",
+    "description": "Cantidad de piezas",
     "placeholders": {
       "value": {}
     }

@@ -39,23 +39,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
-  String asNominalTemplate(num value) {
-    String _temp0 = intl.Intl.pluralLogic(
-      value,
-      locale: localeName,
-      other: '# pieces',
-      one: '1 piece',
-      zero: '0 pieces',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String asNominal(num value) {
     String _temp0 = intl.Intl.pluralLogic(
       value,
       locale: localeName,
-      other: '# pieces',
+      other: '$value pieces',
       one: '1 piece',
       zero: '0 pieces',
     );

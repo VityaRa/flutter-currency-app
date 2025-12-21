@@ -1,4 +1,5 @@
 {
+  "@@locale": "ru",
   "login": "Войти",
   "logout": "Выйти",
   "currencyRate": "Курс Валют",
@@ -9,13 +10,9 @@
   "dark": "Тёмная",
   "system": "Системная",
   "search": "Поиск",
-  "asNominalTemplate": "{value, plural, one{# штука} few{# штуки} many{# штук} other{# штук}}",
-  "@asNominalTemplate": {
-    "description": "Plural template for item quantity"
-  },
-  "asNominal": "{value, plural, =0{0 штук}=1{1 штука}=2{2 штуки}few{# штуки}many{# штук}other{# штук}}",
+  "asNominal": "{value, plural, =0{0 штук}=2{2 штуки}one{{value} штука}few{{value} штуки}many{{value} штук}other{{value} штук}}",
   "@asNominal": {
-    "description": "Plural form for item quantity",
+    "description": "Количество штук",
     "placeholders": {
       "value": {}
     }

@@ -39,28 +39,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get search => 'Поиск';
 
   @override
-  String asNominalTemplate(num value) {
-    String _temp0 = intl.Intl.pluralLogic(
-      value,
-      locale: localeName,
-      other: '# штук',
-      many: '# штук',
-      few: '# штуки',
-      one: '# штука',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String asNominal(num value) {
     String _temp0 = intl.Intl.pluralLogic(
       value,
       locale: localeName,
-      other: '# штук',
-      many: '# штук',
-      few: '# штуки',
+      other: '$value штук',
+      many: '$value штук',
+      few: '$value штуки',
+      one: '$value штука',
       two: '2 штуки',
-      one: '1 штука',
       zero: '0 штук',
     );
     return '$_temp0';
