@@ -3,12 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:lr4/app/currency_detail/currency_detail_cubit.dart';
 import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/formatters.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/domain/repository/currency_repository.dart';
 import 'package:lr4/domain/service/network_service.dart';
 
 class CurrencyDetailPage extends StatelessWidget {
-  final String currencyId; 
+  final String currencyId;
   final String title;
 
   const CurrencyDetailPage({
@@ -47,7 +48,8 @@ class CurrencyDetailPage extends StatelessWidget {
                   children: [
                     Text(state.message),
                     ElevatedButton(
-                      onPressed: () => context.read<CurrencyDetailCubit>().loadHistory(),
+                      onPressed: () =>
+                          context.read<CurrencyDetailCubit>().loadHistory(),
                       child: Text(context.loc.repeat),
                     )
                   ],
@@ -63,7 +65,8 @@ class CurrencyDetailPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = history[index];
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
                       color: colors.primary,
                       borderRadius: BorderRadius.circular(12),
@@ -72,12 +75,14 @@ class CurrencyDetailPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          DateFormat('dd.MM.yyyy').format(item.date),
+                          IntlFormatters.formatShortDate(context.loc.localeName, item.date),
                           style: fonts.semiBold12,
                         ),
                         Text(
-                          '${item.value.toStringAsFixed(4)} ₽',
-                          style: fonts.semiBold12.copyWith(color: colors.blueDepression),
+                          IntlFormatters.convertRubToCurrency(
+                              context.loc.localeName, item.value),
+                          style: fonts.semiBold12
+                              .copyWith(color: colors.blueDepression),
                         ),
                       ],
                     ),

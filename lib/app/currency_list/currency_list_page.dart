@@ -10,6 +10,7 @@ import 'package:lr4/app/currency_list/widgets/currency_card.dart';
 import 'package:lr4/app/currency_list/widgets/search_view.dart';
 import 'package:lr4/app/app_routes.dart';
 import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/formatters.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/repository/currency_repository.dart';
@@ -188,9 +189,8 @@ class CurrencyListPage extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      '${context.loc.updated}: ${DateFormat(_CurrencyListConstants.timeFormat, _CurrencyListConstants.ruLocale).format(state.lastUpdateTime!)}',
+                      '${context.loc.updated}: ${IntlFormatters.formatFullDate(context.loc.localeName, state.lastUpdateTime!)}',
                         style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
-
                     ),
                   ),
                 ),

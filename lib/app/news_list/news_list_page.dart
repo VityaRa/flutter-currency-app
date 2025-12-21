@@ -8,6 +8,7 @@ import 'package:lr4/app/news_list/news_list_cubit.dart';
 import 'package:lr4/app/news_list/news_list_state.dart';
 import 'package:lr4/app/news_list/widgets/news_card.dart';
 import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/formatters.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/domain/datasource/preference_datasource.dart';
 import 'package:lr4/domain/model/news_model.dart';
@@ -46,7 +47,6 @@ class NewsListPage extends StatelessWidget {
         ),
         body: BlocBuilder<NewsListCubit, NewsListState>(
           builder: (context, state) {
-           _logger.info("lastUpdateTime ${state.lastUpdateTime}");
             // Если есть кэшированные данные, показываем их (даже при ошибке сети)
             if (state.allNews.isNotEmpty) {
               return _buildContent(context, state, colors);
@@ -156,7 +156,7 @@ class NewsListPage extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      '${context.loc.updated}: ${DateFormat(_NewsListConstants.timeFormat, _NewsListConstants.ruLocale).format(state.lastUpdateTime!)}',
+                      '${context.loc.updated}: ${IntlFormatters.formatFullDate(context.loc.localeName, state.lastUpdateTime!)}',
                         style: context.fonts.regular12.copyWith(fontSize: 10, color: colors.grey),
 
                     ),

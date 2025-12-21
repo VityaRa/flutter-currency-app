@@ -1,16 +1,14 @@
 // lib/app/news_list/widgets/news_card.dart
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/formatters.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/app/utils/url_launcher.dart'; // Из ваших материалов
 import 'package:lr4/domain/model/news_model.dart'; // Из шага 2.1
 
 // Вспомогательные константы, так как у нас нет AppConstants
 abstract class _NewsConstants {
-  static const String newsDateTimeFormat = 'EE. H:mm dd.MM.yy';
-  static const String ruLocale = 'ru';
   static const String resource = 'cbr.ru';
 }
 
@@ -47,9 +45,7 @@ class NewsCard extends StatelessWidget {
                 children: [
                   if (date != null)
                     Text(
-                        DateFormat(_NewsConstants.newsDateTimeFormat,
-                                _NewsConstants.ruLocale)
-                            .format(date),
+                        IntlFormatters.formatFullDate(context.loc.localeName, date),
                         style: fonts.regular12.copyWith(color: colors.tin)),
                   Text(_NewsConstants.resource,
                       style: fonts.regular12.copyWith(color: colors.tin)),

@@ -5,10 +5,10 @@ import 'package:lr4/app/gen/l10n/app_localizations.dart';
 import 'package:lr4/app/home.dart';
 import 'package:lr4/app/home/home_cubit.dart';
 import 'package:lr4/app/login_page.dart';
+import 'package:lr4/app/profile/widgets/release_countdown_banner.dart';
 import 'package:lr4/app/splash_page.dart';
 import 'package:lr4/app/utils/context_ext.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
-import 'package:lr4/app/utils/theme_mode_ext.dart';
 import 'package:lr4/domain/model/app_theme_mode.dart';
 import 'package:lr4/domain/model/data_source.dart';
 import 'package:lr4/domain/repository/currency_repository.dart';
@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(context.loc.restartApp),
+        title: Text(context.loc.restartApp, style: context.fonts.regular16),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,6 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           children: [
+            ReleaseCountdownBanner(locale: context.loc.localeName),
             // Настройка темы
             ValueListenableBuilder(
               valueListenable: _themeModeNotifier,
@@ -390,7 +391,7 @@ class __RestartWrapperState extends State<_RestartWrapper> {
             SizedBox(height: 10),
             Text(
               context.loc.applyNewDatasource,
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: context.fonts.regular12,
             ),
           ],
         ),

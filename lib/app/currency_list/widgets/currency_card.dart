@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lr4/app/currency_detail/currency_detail_page.dart';
 import 'package:lr4/app/utils/context_ext.dart';
+import 'package:lr4/app/utils/formatters.dart';
 import 'package:lr4/app/utils/theme/theme_data.dart';
 import 'package:lr4/domain/model/currency_model.dart';
 
@@ -121,10 +122,14 @@ class CurrencyCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    model.value.toStringAsFixed(2),
+                    IntlFormatters.convertRubToCurrency(context.loc.localeName, model.value),
                     style: fonts.semiBold12.copyWith(color: rateColor, fontWeight: FontWeight.w700),
                   ),
-                ],
+                  Text(
+                    IntlFormatters.diffPercentage(context.loc.localeName, model.previousValue, model.value),
+                    style: fonts.semiBold12.copyWith(color: rateColor, fontWeight: FontWeight.w700),
+                  ),
+                ],  
               ),
               const SizedBox(width: 5),
               if (priceChange != PriceChange.stable)
